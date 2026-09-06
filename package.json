@@ -6,9 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
-    "db:generate": "drizzle-kit generate",
-    "db:push": "drizzle-kit push"
+    "lint": "next lint"
   },
   "dependencies": {
     "@gsap/react": "^2.1.1",
