@@ -1,5 +1,18 @@
-import { NextRequest, NextResponse } from 'next/server';
+﻿import { NextRequest, NextResponse } from 'next/server';
 
+// GET - Verify current session
+export async function GET(request: NextRequest) {
+  const cookie = request.cookies.get('admin_token');
+  const adminPassword = process.env.ADMIN_PASSWORD || 'explorepakur2024';
+
+  if (cookie?.value && cookie.value === adminPassword) {
+    return NextResponse.json({ authenticated: true });
+  }
+
+  return NextResponse.json({ authenticated: false, error: 'Unauthorized' }, { status: 401 });
+}
+
+// POST - Login
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
@@ -18,7 +31,7 @@ export async function POST(request: NextRequest) {
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'lax',
       path: '/',
-      maxAge: 60 * 60 * 24, // 24 hours
+      maxAge: 60 * 60 * 24 * 7, // 7 days
     });
 
     return response;
@@ -27,7 +40,7 @@ export async function POST(request: NextRequest) {
   }
 }
 
-// DELETE — Logout
+// DELETE - Logout
 export async function DELETE() {
   const response = NextResponse.json({ message: 'Logged out' });
   response.cookies.delete('admin_token');
