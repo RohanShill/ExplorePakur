@@ -1,3 +1,4 @@
+import { verifyAdminAuth } from '@/lib/adminAuth';
 import { NextRequest, NextResponse } from 'next/server';
 import { getSpotByIdFromDb, updateSpotInDb, deleteSpotInDb } from '@/lib/spotsDb';
 
