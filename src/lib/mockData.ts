@@ -274,7 +274,7 @@ export const TOURIST_SPOTS: TouristSpot[] = [
     id: "a1b2c3d4-0013-4000-8000-000000000013",
     title: "Hiranpur Weekly Haat & Tribal Craft Hub",
     slug: "hiranpur-craft-haat",
-    category: "Park & Heritage",
+    category: "Local Market & Culture",
     description: "The vibrant cultural pulse of rural Pakur, famous for authentic Santhal handlooms, indigenous stonecraft, and weekly haat vibes.",
     longDescription: "Every week, Hiranpur transforms into an energetic cultural mosaic. Artisans from surrounding tribal hamlets bring hand-carved black stone mortars, traditional bamboo baskets, colorful Santhal dhokra wraps, and forest produce. It is an unforgettable living slice of indigenous Jharkhand lifestyle.",
     latitude: 24.5830,
@@ -344,6 +344,7 @@ export const CATEGORY_OPTIONS = [
   { label: "Caves & Hills", value: "Cave & Hill" },
   { label: "Thermal Springs", value: "Thermal Spring" },
   { label: "Park & Heritage", value: "Park & Heritage" },
+  { label: "Local Markets & Culture", value: "Local Market & Culture" },
 ];
 
 export const VISITOR_REVIEWS: VisitorReview[] = [

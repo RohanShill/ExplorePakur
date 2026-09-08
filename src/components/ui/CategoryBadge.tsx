@@ -1,6 +1,6 @@
 import React from 'react';
 import { SpotCategory } from '@/types';
-import { Waves, Mountain, Flame, Landmark } from 'lucide-react';
+import { Waves, Mountain, Flame, Landmark, Store } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface CategoryBadgeProps {
@@ -39,6 +39,12 @@ export const CategoryBadge: React.FC<CategoryBadgeProps> = ({
           icon: Landmark,
           bg: 'bg-amber-950/70 text-amber-300 border-amber-500/30 shadow-[0_0_12px_rgba(245,158,11,0.2)]',
           dot: 'bg-amber-400 shadow-[0_0_8px_#fbbf24]',
+        };
+      case 'Local Market & Culture':
+        return {
+          icon: Store,
+          bg: 'bg-rose-950/70 text-rose-300 border-rose-500/30 shadow-[0_0_12px_rgba(244,63,94,0.2)]',
+          dot: 'bg-rose-400 shadow-[0_0_8px_#fb7185]',
         };
       default:
         return {

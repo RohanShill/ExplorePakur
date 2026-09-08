@@ -1,4 +1,4 @@
-export type SpotCategory = 'Waterfall' | 'Cave & Hill' | 'Thermal Spring' | 'Park & Heritage';
+export type SpotCategory = 'Waterfall' | 'Cave & Hill' | 'Thermal Spring' | 'Park & Heritage' | 'Local Market & Culture';
 
 export interface TouristSpot {
   id: string;

@@ -116,7 +116,7 @@ export default function AdminDashboardPage() {
           />
         </div>
         <div className="flex gap-1.5 flex-wrap">
-          {['All', 'Waterfall', 'Cave & Hill', 'Thermal Spring', 'Park & Heritage'].map((cat) => (
+          {['All', 'Waterfall', 'Cave & Hill', 'Thermal Spring', 'Park & Heritage', 'Local Market & Culture'].map((cat) => (
             <button
               key={cat}
               onClick={() => setFilterCat(cat)}

@@ -16,6 +16,7 @@ const CATEGORIES: { label: string; value: SpotCategory }[] = [
   { label: '⛰️ Cave & Hill', value: 'Cave & Hill' },
   { label: '♨️ Thermal Spring', value: 'Thermal Spring' },
   { label: '🏛️ Park & Heritage', value: 'Park & Heritage' },
+  { label: '🛍️ Local Market & Culture', value: 'Local Market & Culture' },
 ];
 
 export const SpotForm: React.FC<SpotFormProps> = ({ initialData, mode }) => {
