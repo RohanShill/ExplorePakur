@@ -1,5 +1,6 @@
-﻿import { NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
+import { verifyAdminAuth } from './lib/adminAuth';
 
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
@@ -9,11 +10,8 @@ export function middleware(request: NextRequest) {
   // Protect /api/admin routes (except /api/admin/auth)
   const isProtectedAdminApi = pathname.startsWith('/api/admin') && !pathname.startsWith('/api/admin/auth');
 
-  const adminToken = request.cookies.get('admin_token')?.value;
-  const adminPassword = process.env.ADMIN_PASSWORD || 'explorepakur2024';
-
   if (isProtectedAdminPage) {
-    if (!adminToken || adminToken !== adminPassword) {
+    if (!verifyAdminAuth(request)) {
       const loginUrl = new URL('/admin/login', request.url);
       loginUrl.searchParams.set('redirect', pathname);
       return NextResponse.redirect(loginUrl);
@@ -21,10 +19,7 @@ export function middleware(request: NextRequest) {
   }
 
   if (isProtectedAdminApi) {
-    const authHeader = request.headers.get('authorization');
-    const token = authHeader?.replace('Bearer ', '') || adminToken;
-
-    if (!token || token !== adminPassword) {
+    if (!verifyAdminAuth(request)) {
       return NextResponse.json({ error: 'Unauthorized: Admin access required' }, { status: 401 });
     }
   }

@@ -2,11 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getSpotByIdFromDb, updateSpotInDb, deleteSpotInDb } from '@/lib/spotsDb';
 
 function verifyAuth(request: NextRequest): boolean {
-  const authHeader = request.headers.get('authorization');
-  const cookie = request.cookies.get('admin_token');
-  const token = authHeader?.replace('Bearer ', '') || cookie?.value;
-  const adminPassword = process.env.ADMIN_PASSWORD || 'explorepakur2024';
-  return token === adminPassword;
+  return verifyAdminAuth(request);
 }
 
 // GET /api/admin/spots/[id] - Get single spot

@@ -1,32 +1,44 @@
-﻿import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
+import { getExpectedAdminToken, verifyAdminAuth, ADMIN_CONFIG } from '@/lib/adminAuth';
 
 // GET - Verify current session
 export async function GET(request: NextRequest) {
-  const cookie = request.cookies.get('admin_token');
-  const adminPassword = process.env.ADMIN_PASSWORD || 'explorepakur2024';
-
-  if (cookie?.value && cookie.value === adminPassword) {
-    return NextResponse.json({ authenticated: true });
+  if (verifyAdminAuth(request)) {
+    return NextResponse.json({ authenticated: true, email: ADMIN_CONFIG.EMAIL });
   }
 
   return NextResponse.json({ authenticated: false, error: 'Unauthorized' }, { status: 401 });
 }
 
-// POST - Login
+// POST - Login with Email & Password
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { password } = body;
-    const adminPassword = process.env.ADMIN_PASSWORD || 'explorepakur2024';
+    const { email, password } = body;
 
-    if (password !== adminPassword) {
-      return NextResponse.json({ error: 'Invalid password' }, { status: 401 });
+    const expectedEmail = ADMIN_CONFIG.EMAIL.trim().toLowerCase();
+    const expectedPassword = ADMIN_CONFIG.PASSWORD;
+
+    const providedEmail = (email || '').trim().toLowerCase();
+    const providedPassword = password || '';
+
+    if (providedEmail !== expectedEmail || providedPassword !== expectedPassword) {
+      return NextResponse.json(
+        { error: 'Galat Email ya Password! Kripya sahi credentials daalein.' },
+        { status: 401 }
+      );
     }
 
-    // Create response with auth cookie
-    const response = NextResponse.json({ message: 'Login successful', authenticated: true });
+    const sessionToken = getExpectedAdminToken();
 
-    response.cookies.set('admin_token', adminPassword, {
+    // Create response with secure auth cookie
+    const response = NextResponse.json({
+      message: 'Login successful',
+      authenticated: true,
+      user: { email: expectedEmail },
+    });
+
+    response.cookies.set('admin_token', sessionToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'lax',

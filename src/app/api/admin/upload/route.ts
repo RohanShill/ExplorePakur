@@ -4,12 +4,7 @@ import path from 'path';
 import { isImageKitConfigured, uploadToImageKit } from '@/lib/imagekit';
 
 export async function POST(request: NextRequest) {
-  const authHeader = request.headers.get('authorization');
-  const cookie = request.cookies.get('admin_token');
-  const token = authHeader?.replace('Bearer ', '') || cookie?.value;
-  const adminPassword = process.env.ADMIN_PASSWORD || 'explorepakur2024';
-
-  if (token !== adminPassword) {
+  if (!verifyAdminAuth(request)) {
     return NextResponse.json({ error: 'Unauthorized: Please login as admin' }, { status: 401 });
   }
 
