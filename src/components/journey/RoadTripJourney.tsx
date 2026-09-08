@@ -253,8 +253,8 @@ export const RoadTripJourney: React.FC<RoadTripJourneyProps> = ({ spots }) => {
             className="w-full h-full object-cover object-center"
           />
           {/* Cinematic Vignette Gradients */}
-          <div className="absolute inset-0 bg-gradient-to-t from-[#0B130E] via-[#0B130E]/75 to-transparent" />
-          <div className="absolute inset-0 bg-gradient-to-r from-[#0B130E]/90 via-[#0B130E]/40 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#0B130E] via-[#0B130E]/60 to-black/20" />
+          <div className="hidden sm:block absolute inset-0 bg-gradient-to-r from-[#0B130E]/80 via-[#0B130E]/30 to-transparent" />
         </div>
 
         {/* Top Badges & Stop Indicator */}

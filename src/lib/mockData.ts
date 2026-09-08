@@ -34,7 +34,7 @@ export const TOURIST_SPOTS: TouristSpot[] = [
     longDescription: "Deep within the undulating terrain of Littipara block lies Kanchangarh Cave. Carved naturally through millenia of geological weathering in volcanic basalt, this cavern features dramatic rock crevices and cool internal chambers. Local villagers recount tales of spiritual ascetics who meditated within its peaceful sanctum.",
     latitude: 24.6300,
     longitude: 87.6200,
-    coverImage: "https://images.unsplash.com/photo-1518457607834-6e8d80c183c5?auto=format&fit=crop&w=1200&q=80",
+    coverImage: "https://ik.imagekit.io/r2h4n/explore-pakur/kinkakuji-temple-rokuon-ji-buddhist-temple-kyoto-japan-3840x2160-4319_ja_AT2HvC.jpg",
     galleryImages: [
       "https://images.unsplash.com/photo-1518457607834-6e8d80c183c5?auto=format&fit=crop&w=800&q=80",
       "https://images.unsplash.com/photo-1509316975850-ff9c5deb0cd9?auto=format&fit=crop&w=800&q=80"
@@ -57,7 +57,7 @@ export const TOURIST_SPOTS: TouristSpot[] = [
     longDescription: "Fed by seasonal mountain streams originating in the uplands, Lilatari Waterfall cascades in multiple tiers over rugged granite boulders. The surrounding canopy of Mahua, Kendu, and Sal trees keeps the microclimate delightfully cool. It is Pakur's prime destination for nature lovers seeking pristine, uncommercialized wilderness.",
     latitude: 24.6100,
     longitude: 87.5500,
-    coverImage: "https://images.unsplash.com/photo-1432405972618-c60b0225b8f9?auto=format&fit=crop&w=1200&q=80",
+    coverImage: "https://ik.imagekit.io/r2h4n/explore-pakur/ChatGPT_Image_Sep_8__2026__11_13_04_PM_24RAqWexC.png",
     galleryImages: [
       "https://images.unsplash.com/photo-1432405972618-c60b0225b8f9?auto=format&fit=crop&w=800&q=80",
       "https://images.unsplash.com/photo-1447752875215-b2761acb3c5d?auto=format&fit=crop&w=800&q=80"
@@ -191,7 +191,7 @@ export const TOURIST_SPOTS: TouristSpot[] = [
     longDescription: "Standing 30 feet tall with 30 key loopholes for musketry, the Pakur Martello Tower is a unique British defensive watchtower erected in 1856 by S.D.O. Sir Alexander Eden following the fierce Santhal Hul freedom uprising. Surrounded by heritage gardens, it serves as a tangible memorial to the turbulent colonial history of the Santhal Pargana.",
     latitude: 24.6344,
     longitude: 87.8475,
-    coverImage: "https://images.unsplash.com/photo-1590059390046-24f1c9c4b789?auto=format&fit=crop&w=1200&q=80",
+    coverImage: "https://ik.imagekit.io/r2h4n/explore-pakur/ChatGPT_Image_Sep_8__2026__10_58_07_PM_OXsZ2ca8s.png",
     galleryImages: [
       "https://images.unsplash.com/photo-1590059390046-24f1c9c4b789?auto=format&fit=crop&w=800&q=80"
     ],
@@ -235,7 +235,7 @@ export const TOURIST_SPOTS: TouristSpot[] = [
     longDescription: "Located 30 km south of Pakur, Maheshpur was historically the seat of the illustrious Maheshpur Raj. The sprawling palace ruins feature magnificent archways, old durbar halls, vintage ponds, and ancient family temples. Walking through its regal corridors offers a glimpse into Santhal Pargana's royal era.",
     latitude: 24.4780,
     longitude: 87.7650,
-    coverImage: "https://images.unsplash.com/photo-1599839575945-a9e5af0c3fa5?auto=format&fit=crop&w=1200&q=80",
+    coverImage: "https://ik.imagekit.io/r2h4n/explore-pakur/ChatGPT_Image_Sep_8__2026__11_26_16_PM_TCXTP4D82.png",
     galleryImages: [
       "https://images.unsplash.com/photo-1599839575945-a9e5af0c3fa5?auto=format&fit=crop&w=800&q=80"
     ],
@@ -257,7 +257,7 @@ export const TOURIST_SPOTS: TouristSpot[] = [
     longDescription: "Singhashi Peak is one of the highest natural elevations in southern Pakur. Dense sal tree belts flank the winding ascent, which culminates at a hilltop rock sanctum offering 360-degree views of mist-covered ridges extending into the horizon. Popular among trekkers and adventure seekers.",
     latitude: 24.5230,
     longitude: 87.6540,
-    coverImage: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1200&q=80",
+    coverImage: "https://ik.imagekit.io/r2h4n/explore-pakur/ChatGPT_Image_Sep_8__2026__11_34_39_PM_NF6dYfmNH-.png",
     galleryImages: [
       "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=80"
     ],
@@ -279,7 +279,7 @@ export const TOURIST_SPOTS: TouristSpot[] = [
     longDescription: "Every week, Hiranpur transforms into an energetic cultural mosaic. Artisans from surrounding tribal hamlets bring hand-carved black stone mortars, traditional bamboo baskets, colorful Santhal dhokra wraps, and forest produce. It is an unforgettable living slice of indigenous Jharkhand lifestyle.",
     latitude: 24.5830,
     longitude: 87.7120,
-    coverImage: "https://images.unsplash.com/photo-1509316975850-ff9c5deb0cd9?auto=format&fit=crop&w=1200&q=80",
+    coverImage: "https://ik.imagekit.io/r2h4n/explore-pakur/ChatGPT_Image_Sep_8__2026__11_07_32_PM_aRChAhhyq.png",
     galleryImages: [
       "https://images.unsplash.com/photo-1509316975850-ff9c5deb0cd9?auto=format&fit=crop&w=800&q=80"
     ],

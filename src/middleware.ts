@@ -7,8 +7,17 @@ export function middleware(request: NextRequest) {
 
   // Protect /admin routes (except /admin/login)
   const isProtectedAdminPage = pathname.startsWith('/admin') && !pathname.startsWith('/admin/login');
-  // Protect /api/admin routes (except /api/admin/auth)
-  const isProtectedAdminApi = pathname.startsWith('/api/admin') && !pathname.startsWith('/api/admin/auth');
+
+  // Allow public GET on /api/admin/spots for the frontend website to load spots
+  const isPublicApiGet = request.method === 'GET' && (
+    pathname === '/api/admin/spots' || pathname.startsWith('/api/admin/spots/')
+  );
+
+  // Protect all mutating /api/admin routes (and all other admin APIs except public GET and auth)
+  const isProtectedAdminApi =
+    pathname.startsWith('/api/admin') &&
+    !pathname.startsWith('/api/admin/auth') &&
+    !isPublicApiGet;
 
   if (isProtectedAdminPage) {
     if (!verifyAdminAuth(request)) {
