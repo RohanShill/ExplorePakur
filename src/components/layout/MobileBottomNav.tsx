@@ -3,8 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Compass, Map, Navigation, MessageSquareShare, ArrowUp } from 'lucide-react';
-import { buildWhatsAppLink } from '@/lib/utils';
+import { Compass, Map, Navigation, Sparkles, ArrowUp } from 'lucide-react';
 
 export const MobileBottomNav: React.FC = () => {
   const pathname = usePathname();
@@ -18,6 +17,11 @@ export const MobileBottomNav: React.FC = () => {
       // Simple active tab detector
       const mapSection = document.getElementById('map-section');
       const roadTripSection = document.getElementById('road-trip-section');
+
+      if (pathname === '/spots') {
+        setActiveTab('spots');
+        return;
+      }
 
       if (mapSection) {
         const rect = mapSection.getBoundingClientRect();
@@ -35,11 +39,7 @@ export const MobileBottomNav: React.FC = () => {
         }
       }
 
-      if (pathname === '/spots') {
-        setActiveTab('spots');
-      } else {
-        setActiveTab('explore');
-      }
+      setActiveTab('explore');
     };
 
     window.addEventListener('scroll', handleScroll, { passive: true });
@@ -52,11 +52,6 @@ export const MobileBottomNav: React.FC = () => {
       el.scrollIntoView({ behavior: 'smooth' });
     }
   };
-
-  const whatsappUrl = buildWhatsAppLink(
-    '919431100001',
-    'Johar! I am visiting Pakur district and need help with eco-tourism spots, taxi routes, and local guides.'
-  );
 
   return (
     <>
@@ -95,7 +90,20 @@ export const MobileBottomNav: React.FC = () => {
             <span className="text-[10px] font-bold mt-1 tracking-tight">Explore</span>
           </Link>
 
-          {/* 2. District Map */}
+          {/* 2. All Destinations */}
+          <Link
+            href="/spots"
+            className={`flex-1 flex flex-col items-center justify-center py-1.5 px-2 rounded-xl transition-all duration-200 ${
+              pathname === '/spots'
+                ? 'bg-[#111E16] text-[#00F5A0] shadow-[0_0_12px_rgba(0,245,160,0.2)]'
+                : 'text-slate-400 hover:text-slate-200'
+            }`}
+          >
+            <Sparkles size={19} className={pathname === '/spots' ? 'text-[#00F5A0]' : ''} />
+            <span className="text-[10px] font-bold mt-1 tracking-tight">Spots</span>
+          </Link>
+
+          {/* 3. District Map */}
           <button
             onClick={() => {
               if (pathname === '/') {
@@ -105,16 +113,16 @@ export const MobileBottomNav: React.FC = () => {
               }
             }}
             className={`flex-1 flex flex-col items-center justify-center py-1.5 px-2 rounded-xl transition-all duration-200 ${
-              activeTab === 'map'
+              activeTab === 'map' && pathname === '/'
                 ? 'bg-[#111E16] text-[#00F5A0] shadow-[0_0_12px_rgba(0,245,160,0.2)]'
                 : 'text-slate-400 hover:text-slate-200'
             }`}
           >
-            <Map size={19} className={activeTab === 'map' ? 'text-[#00F5A0]' : ''} />
+            <Map size={19} className={activeTab === 'map' && pathname === '/' ? 'text-[#00F5A0]' : ''} />
             <span className="text-[10px] font-bold mt-1 tracking-tight">Map</span>
           </button>
 
-          {/* 3. Road Trip */}
+          {/* 4. Road Trip */}
           <button
             onClick={() => {
               if (pathname === '/') {
@@ -124,25 +132,14 @@ export const MobileBottomNav: React.FC = () => {
               }
             }}
             className={`flex-1 flex flex-col items-center justify-center py-1.5 px-2 rounded-xl transition-all duration-200 ${
-              activeTab === 'roadtrip'
+              activeTab === 'roadtrip' && pathname === '/'
                 ? 'bg-[#111E16] text-[#00F5A0] shadow-[0_0_12px_rgba(0,245,160,0.2)]'
                 : 'text-slate-400 hover:text-slate-200'
             }`}
           >
-            <Navigation size={19} className={activeTab === 'roadtrip' ? 'text-[#00F5A0]' : ''} />
+            <Navigation size={19} className={activeTab === 'roadtrip' && pathname === '/' ? 'text-[#00F5A0]' : ''} />
             <span className="text-[10px] font-bold mt-1 tracking-tight">Road Trip</span>
           </button>
-
-          {/* 4. WhatsApp Local Guide Help Desk */}
-          <a
-            href={whatsappUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex-1 flex flex-col items-center justify-center py-1.5 px-2 rounded-xl text-[#00F5A0] bg-[#111E16] border border-emerald-500/30 hover:bg-[#16281E] shadow-[0_0_14px_rgba(0,245,160,0.15)] active:scale-95 transition-all"
-          >
-            <MessageSquareShare size={19} className="text-[#00F5A0]" />
-            <span className="text-[10px] font-bold mt-1 tracking-tight text-[#00F5A0]">Guide Help</span>
-          </a>
         </div>
       </nav>
     </>
