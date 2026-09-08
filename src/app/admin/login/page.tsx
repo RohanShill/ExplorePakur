@@ -49,8 +49,8 @@ export default function AdminLoginPage() {
       <div className="w-full max-w-md space-y-6 relative z-10">
         {/* Brand Header */}
         <div className="text-center space-y-3">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-[#FF6B4A] via-emerald-600 to-emerald-800 shadow-[0_0_30px_rgba(255,107,74,0.3)]">
-            <Compass size={28} className="text-slate-100" />
+          <div className="inline-flex items-center justify-center w-20 h-20 rounded-2xl overflow-hidden border border-emerald-500/40 shadow-[0_0_35px_rgba(0,245,160,0.35)]">
+            <img src="/logo.png" alt="ExplorePakur Martello Tower Logo" className="w-full h-full object-cover" />
           </div>
           <h1 className="text-2xl font-black text-slate-100 tracking-tight">
             Explore<span className="text-[#FF6B4A]">Pakur</span> Admin

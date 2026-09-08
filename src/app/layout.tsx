@@ -25,6 +25,15 @@ export const metadata: Metadata = {
     'Explore Pakur'
   ],
   authors: [{ name: 'Explore Pakur Initiative' }],
+  icons: {
+    icon: [
+      { url: '/logo.png', type: 'image/png' },
+      { url: '/favicon.ico' },
+    ],
+    apple: [
+      { url: '/logo.png' },
+    ],
+  },
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://explorepakur.in'),
   openGraph: {
     title: 'Explore Pakur - Eco-Tourism & Santhal Heritage Portal',

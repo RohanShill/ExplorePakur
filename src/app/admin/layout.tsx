@@ -62,8 +62,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   if (loading) {
     return (
       <div className="min-h-screen bg-[#0B130E] flex flex-col items-center justify-center gap-3">
-        <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#FF6B4A] via-emerald-600 to-emerald-800 flex items-center justify-center shadow-[0_0_20px_rgba(255,107,74,0.3)] animate-pulse">
-          <ShieldCheck size={24} className="text-white" />
+        <div className="w-14 h-14 rounded-2xl overflow-hidden border border-emerald-500/40 shadow-[0_0_25px_rgba(0,245,160,0.35)] animate-pulse shrink-0">
+          <img src="/logo.png" alt="ExplorePakur Logo" className="w-full h-full object-cover" />
         </div>
         <div className="flex items-center gap-2 text-slate-300 text-sm font-medium">
           <Loader2 size={16} className="animate-spin text-[#FF6B4A]" />
@@ -97,8 +97,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         {/* Brand */}
         <div className="p-5 flex items-center justify-between">
           <Link href="/admin" className="flex items-center gap-2.5">
-            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[#FF6B4A] via-emerald-600 to-emerald-800 flex items-center justify-center shadow-[0_0_15px_rgba(255,107,74,0.25)]">
-              <Compass size={18} className="text-slate-100" />
+            <div className="w-10 h-10 rounded-xl overflow-hidden border border-emerald-500/30 shadow-[0_0_15px_rgba(0,245,160,0.25)] shrink-0">
+              <img src="/logo.png" alt="ExplorePakur Logo" className="w-full h-full object-cover" />
             </div>
             <div>
               <span className="text-sm font-black text-slate-100">

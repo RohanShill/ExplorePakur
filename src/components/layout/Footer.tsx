@@ -10,8 +10,12 @@ export const Footer: React.FC = () => {
           {/* Brand & Mission */}
           <div className="md:col-span-2 space-y-4">
             <div className="flex items-center gap-2.5">
-              <div className="h-9 w-9 rounded-xl bg-gradient-to-br from-[#00F5A0] to-emerald-700 flex items-center justify-center text-[#0B130E] shadow-md shadow-[#00F5A0]/20">
-                <Compass className="h-5 w-5" />
+              <div className="relative h-10 w-10 rounded-xl overflow-hidden border border-emerald-500/40 shadow-[0_0_15px_rgba(0,245,160,0.3)] shrink-0">
+                <img
+                  src="/logo.png"
+                  alt="ExplorePakur Logo"
+                  className="h-full w-full object-cover"
+                />
               </div>
               <span className="text-xl font-black text-white tracking-tight">
                 Explore<span className="text-[#00F5A0]">Pakur</span>

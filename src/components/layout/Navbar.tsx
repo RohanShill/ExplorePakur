@@ -22,8 +22,12 @@ export const Navbar: React.FC = () => {
         <div className="flex items-center justify-between h-16">
           {/* Brand Logo */}
           <Link href="/" className="flex items-center gap-2.5 group">
-            <div className="h-9 w-9 rounded-xl bg-gradient-to-br from-[#FF6B4A] via-emerald-600 to-emerald-800 flex items-center justify-center text-slate-100 shadow-md shadow-[#FF6B4A]/25 group-hover:scale-105 transition-transform">
-              <Compass className="h-5 w-5" />
+            <div className="relative h-10 w-10 rounded-xl overflow-hidden border border-emerald-500/40 shadow-[0_0_15px_rgba(0,245,160,0.3)] group-hover:scale-105 transition-transform shrink-0">
+              <img
+                src="/logo.png"
+                alt="ExplorePakur Martello Tower Logo"
+                className="h-full w-full object-cover"
+              />
             </div>
             <div className="flex flex-col">
               <span className="text-lg font-black tracking-tight text-slate-100 font-sans">
