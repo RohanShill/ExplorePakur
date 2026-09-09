@@ -1,6 +1,6 @@
 ﻿'use client';
 
-import React, { useRef, useState, useEffect, useCallback } from 'react';
+import React, { useRef, useState, useEffect, useCallback, useMemo } from 'react';
 import Link from 'next/link';
 import gsap from 'gsap';
 import { TouristSpot } from '@/types';
@@ -16,7 +16,11 @@ import {
   Calendar,
   Clock,
   ArrowRight,
-  CheckCircle2,
+  Eye,
+  Volume2,
+  VolumeX,
+  Footprints,
+  Maximize2,
 } from 'lucide-react';
 import { getGoogleMapsDirectionsUrl } from '@/lib/utils';
 
@@ -24,7 +28,45 @@ interface RoadTripJourneyProps {
   spots: TouristSpot[];
 }
 
-// Smart formatter for stop titles to avoid duplicates and awkward truncations
+const CATEGORY_COLORS: Record<string, { accent: string; text: string; bg: string; badge: string; icon: string }> = {
+  Waterfall: {
+    accent: '#00E5FF',
+    text: 'text-cyan-300',
+    bg: 'bg-cyan-950/50 border-cyan-500/30',
+    badge: 'bg-cyan-500/20 text-cyan-300 border-cyan-500/40',
+    icon: '🌊',
+  },
+  'Cave & Hill': {
+    accent: '#00F5A0',
+    text: 'text-emerald-300',
+    bg: 'bg-emerald-950/50 border-emerald-500/30',
+    badge: 'bg-emerald-500/20 text-[#00F5A0] border-emerald-500/40',
+    icon: '⛰️',
+  },
+  'Thermal Spring': {
+    accent: '#FFB300',
+    text: 'text-amber-300',
+    bg: 'bg-amber-950/50 border-amber-500/30',
+    badge: 'bg-amber-500/20 text-amber-300 border-amber-500/40',
+    icon: '♨️',
+  },
+  'Park & Heritage': {
+    accent: '#A78BFA',
+    text: 'text-purple-300',
+    bg: 'bg-purple-950/50 border-purple-500/30',
+    badge: 'bg-purple-500/20 text-purple-300 border-purple-500/40',
+    icon: '🏛️',
+  },
+  'Local Market & Culture': {
+    accent: '#FF6B4A',
+    text: 'text-rose-300',
+    bg: 'bg-rose-950/50 border-rose-500/30',
+    badge: 'bg-rose-500/20 text-[#FF6B4A] border-rose-500/40',
+    icon: '🛍️',
+  },
+};
+
+// Smart formatter for stop titles
 const formatStopTitle = (title: string): string => {
   let cleaned = title
     .replace(/^Hiranpur\s+/i, '')
@@ -42,49 +84,122 @@ const formatStopTitle = (title: string): string => {
     cleaned = title.split(' ').slice(0, 2).join(' ');
   }
 
-  return cleaned.length > 18 ? cleaned.slice(0, 16) + '…' : cleaned;
+  return cleaned.length > 20 ? cleaned.slice(0, 18) + '…' : cleaned;
 };
 
 export const RoadTripJourney: React.FC<RoadTripJourneyProps> = ({ spots }) => {
   // Use first 8 spots or all available for the expedition tour
-  const expeditionSpots = React.useMemo(() => {
+  const expeditionSpots = useMemo(() => {
     return spots.length > 0 ? spots.slice(0, 8) : [];
   }, [spots]);
 
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isPlaying, setIsPlaying] = useState(true);
+  const [soundActive, setSoundActive] = useState(false);
   const [touchStartX, setTouchStartX] = useState<number | null>(null);
 
-  // Refs for GSAP animations
+  // Refs for animations
   const slideContainerRef = useRef<HTMLDivElement>(null);
   const imageRef = useRef<HTMLImageElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
   const progressBarRef = useRef<HTMLDivElement>(null);
-  const vehicleRef = useRef<HTMLDivElement>(null);
+  const audioCtxRef = useRef<AudioContext | null>(null);
+  const audioOscRef = useRef<OscillatorNode | null>(null);
+  const audioGainRef = useRef<GainNode | null>(null);
   const timelineRef = useRef<gsap.core.Timeline | null>(null);
 
   const activeSpot = expeditionSpots[currentIndex] || expeditionSpots[0];
+  const catStyle = CATEGORY_COLORS[activeSpot?.category] || CATEGORY_COLORS['Cave & Hill'];
+
+  // Calculate next 2 upcoming stops for preview cards
+  const upcomingStops = useMemo(() => {
+    if (expeditionSpots.length <= 1) return [];
+    const next1 = (currentIndex + 1) % expeditionSpots.length;
+    const next2 = (currentIndex + 2) % expeditionSpots.length;
+    return [
+      { spot: expeditionSpots[next1], index: next1 },
+      { spot: expeditionSpots[next2], index: next2 },
+    ];
+  }, [currentIndex, expeditionSpots]);
+
+  // Ambient chime synthesizer for immersive soundscape
+  const toggleAmbientSound = () => {
+    if (!soundActive) {
+      try {
+        const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
+        const ctx = new AudioCtx();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(261.63, ctx.currentTime); // C4 gentle ambient drone
+
+        gain.gain.setValueAtTime(0.01, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.04, ctx.currentTime + 1);
+
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start();
+
+        audioCtxRef.current = ctx;
+        audioOscRef.current = osc;
+        audioGainRef.current = gain;
+        setSoundActive(true);
+      } catch {
+        // AudioContext restricted or unsupported
+      }
+    } else {
+      if (audioOscRef.current) {
+        try {
+          audioOscRef.current.stop();
+          audioOscRef.current.disconnect();
+        } catch {}
+      }
+      if (audioCtxRef.current) {
+        try {
+          audioCtxRef.current.close();
+        } catch {}
+      }
+      setSoundActive(false);
+    }
+  };
+
+  // Clean up audio on unmount
+  useEffect(() => {
+    return () => {
+      if (audioOscRef.current) {
+        try {
+          audioOscRef.current.stop();
+        } catch {}
+      }
+      if (audioCtxRef.current) {
+        try {
+          audioCtxRef.current.close();
+        } catch {}
+      }
+    };
+  }, []);
 
   // GSAP transition when slide changes
   const animateSlide = useCallback(
     (direction: 'next' | 'prev' = 'next') => {
       if (!imageRef.current || !contentRef.current) return;
 
-      const xOffset = direction === 'next' ? 40 : -40;
+      const xOffset = direction === 'next' ? 30 : -30;
 
-      // 1. Cinematic Background Image Zoom & Soft Blur Focus
+      // 1. Cinematic Background Image Zoom & Soft Vignette Focus
       gsap.fromTo(
         imageRef.current,
         {
-          scale: 1.12,
-          opacity: 0.6,
-          filter: 'blur(6px)',
+          scale: 1.15,
+          opacity: 0.5,
+          filter: 'blur(8px)',
         },
         {
           scale: 1.0,
           opacity: 1,
           filter: 'blur(0px)',
-          duration: 0.9,
+          duration: 1.0,
           ease: 'power3.out',
         }
       );
@@ -96,29 +211,19 @@ export const RoadTripJourney: React.FC<RoadTripJourneyProps> = ({ spots }) => {
         {
           opacity: 0,
           x: xOffset,
-          y: 15,
+          y: 18,
         },
         {
           opacity: 1,
           x: 0,
           y: 0,
-          duration: 0.6,
-          stagger: 0.06,
+          duration: 0.65,
+          stagger: 0.07,
           ease: 'power3.out',
         }
       );
-
-      // 3. Drive the Mini Safari Vehicle on Highway Track
-      if (vehicleRef.current && expeditionSpots.length > 0) {
-        const percent = (currentIndex / Math.max(expeditionSpots.length - 1, 1)) * 100;
-        gsap.to(vehicleRef.current, {
-          left: `${percent}%`,
-          duration: 0.7,
-          ease: 'power2.out',
-        });
-      }
     },
-    [currentIndex, expeditionSpots.length]
+    []
   );
 
   useEffect(() => {
@@ -139,7 +244,7 @@ export const RoadTripJourney: React.FC<RoadTripJourneyProps> = ({ spots }) => {
       timelineRef.current.fromTo(
         progressBarRef.current,
         { width: '0%' },
-        { width: '100%', duration: 5, ease: 'none' }
+        { width: '100%', duration: 6, ease: 'none' }
       );
     }
 
@@ -204,68 +309,99 @@ export const RoadTripJourney: React.FC<RoadTripJourneyProps> = ({ spots }) => {
   );
 
   return (
-    <div className="w-full space-y-4">
-      {/* Expedition Journey Header */}
+    <div className="w-full space-y-4 my-2">
+      {/* 1. Header Bar with Category Filters Context & Controls */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 px-1">
         <div className="space-y-1">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#111E16] border border-emerald-500/30 text-[#00F5A0] text-xs font-bold shadow-[0_0_12px_rgba(0,245,160,0.2)]">
-            <Compass size={14} className="animate-spin-slow text-[#FF6B4A]" />
-            <span className="uppercase tracking-wider">Scenic Circuit Route</span>
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#111E16] border border-emerald-500/30 text-[#00F5A0] text-xs font-bold shadow-[0_0_15px_rgba(0,245,160,0.2)]">
+            <span className="w-2 h-2 rounded-full bg-[#00F5A0] animate-ping" />
+            <span className="uppercase tracking-widest text-[10px]">Curated Expedition Portal</span>
           </div>
-          <h2 className="text-2xl sm:text-3xl font-black text-slate-100 tracking-tight">
-            Pakur Road Trip Expedition
+          <h2 className="text-2xl sm:text-4xl font-black text-slate-100 tracking-tight flex items-center gap-2">
+            Pakur Grand Tour Circuit
           </h2>
-          <p className="text-xs sm:text-sm text-slate-400">
-            A curated virtual voyage connecting Pakur's top waterfalls, ancient caves, and heritage landmarks.
+          <p className="text-xs sm:text-sm text-slate-400 max-w-xl">
+            Take a cinematic virtual expedition across Pakur's ancient volcanic hills, hidden jungle cascades, and living tribal heritage.
           </p>
         </div>
 
-        {/* Carousel Action Controls */}
-        <div className="flex items-center gap-2 self-start sm:self-auto">
+        {/* Global Action Toolbar */}
+        <div className="flex items-center gap-2 self-start sm:self-auto flex-wrap">
+          {/* Ambient Sound Toggle */}
+          <button
+            onClick={toggleAmbientSound}
+            title={soundActive ? 'Mute ambient sound' : 'Play peaceful ambient sound'}
+            className={`flex items-center gap-1.5 px-3 py-2 rounded-xl border text-xs font-bold transition-all active:scale-95 ${
+              soundActive
+                ? 'bg-emerald-500/20 border-[#00F5A0] text-[#00F5A0] shadow-[0_0_15px_rgba(0,245,160,0.3)]'
+                : 'bg-[#111E16] border-emerald-500/20 text-slate-400 hover:text-slate-200'
+            }`}
+          >
+            {soundActive ? (
+              <>
+                <Volume2 size={14} className="text-[#00F5A0] animate-pulse" />
+                <span className="hidden md:inline">Wilderness Audio (On)</span>
+              </>
+            ) : (
+              <>
+                <VolumeX size={14} />
+                <span className="hidden md:inline">Ambient Audio</span>
+              </>
+            )}
+          </button>
+
+          {/* Autoplay Pause / Play */}
           <button
             onClick={() => setIsPlaying(!isPlaying)}
             aria-label={isPlaying ? 'Pause Auto-tour' : 'Play Auto-tour'}
             className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-[#111E16] hover:bg-[#16281E] border border-emerald-500/20 text-xs font-bold text-slate-300 active:scale-95 transition-all"
           >
             {isPlaying ? <Pause size={14} className="text-[#FF6B4A]" /> : <Play size={14} className="text-[#00F5A0]" />}
-            <span>{isPlaying ? 'Pause Tour' : 'Resume'}</span>
+            <span className="hidden sm:inline">{isPlaying ? 'Auto-Touring' : 'Paused'}</span>
           </button>
 
-          <button
-            onClick={handlePrev}
-            aria-label="Previous Stop"
-            className="p-2.5 rounded-xl bg-[#111E16] hover:bg-[#16281E] border border-emerald-500/20 text-slate-200 active:scale-95 transition-all"
-          >
-            <ChevronLeft size={16} />
-          </button>
-
-          <button
-            onClick={handleNext}
-            aria-label="Next Stop"
-            className="p-2.5 rounded-xl bg-[#111E16] hover:bg-[#16281E] border border-emerald-500/20 text-slate-200 active:scale-95 transition-all"
-          >
-            <ChevronRight size={16} />
-          </button>
+          {/* Prev / Next Arrows */}
+          <div className="flex items-center gap-1 bg-[#111E16] p-1 rounded-xl border border-emerald-500/20">
+            <button
+              onClick={handlePrev}
+              aria-label="Previous Stop"
+              className="p-1.5 rounded-lg hover:bg-[#16281E] text-slate-300 hover:text-white active:scale-95 transition-all"
+              title="Previous (or Press Left Arrow)"
+            >
+              <ChevronLeft size={16} />
+            </button>
+            <span className="text-[11px] font-mono font-bold text-slate-400 px-1">
+              {currentIndex + 1}/{expeditionSpots.length}
+            </span>
+            <button
+              onClick={handleNext}
+              aria-label="Next Stop"
+              className="p-1.5 rounded-lg hover:bg-[#16281E] text-slate-300 hover:text-white active:scale-95 transition-all"
+              title="Next (or Press Right Arrow)"
+            >
+              <ChevronRight size={16} />
+            </button>
+          </div>
         </div>
       </div>
 
-      {/* Main Cinematic Carousel Stage */}
+      {/* 2. Main Cinematic Stage with Interactive 3D Side-Deck */}
       <div
         ref={slideContainerRef}
         onTouchStart={handleTouchStart}
         onTouchEnd={handleTouchEnd}
-        className="relative w-full min-h-[480px] sm:min-h-[520px] rounded-3xl overflow-hidden bg-[#060B08] border border-emerald-500/25 shadow-[0_20px_60px_rgba(0,0,0,0.85)] flex flex-col justify-between"
+        className="relative w-full rounded-3xl overflow-hidden bg-[#060B08] border border-emerald-500/25 shadow-[0_25px_70px_rgba(0,0,0,0.9)] flex flex-col justify-between"
       >
-        {/* Auto-Play Top Progress Bar */}
+        {/* Top Seamless Auto-Play Timer Line */}
         <div className="absolute top-0 left-0 right-0 h-1 bg-white/10 z-30">
           <div
             ref={progressBarRef}
-            className="h-full bg-gradient-to-r from-[#00F5A0] via-[#FF6B4A] to-amber-400 shadow-[0_0_10px_#00F5A0]"
+            className="h-full bg-gradient-to-r from-[#00F5A0] via-[#FF6B4A] to-amber-400 shadow-[0_0_12px_#00F5A0]"
             style={{ width: '0%' }}
           />
         </div>
 
-        {/* Dynamic Background Image with Smooth GSAP Zoom */}
+        {/* Dynamic Background Image with Zoom Blur Effect */}
         <div className="absolute inset-0 z-0 overflow-hidden">
           <img
             ref={imageRef}
@@ -273,193 +409,240 @@ export const RoadTripJourney: React.FC<RoadTripJourneyProps> = ({ spots }) => {
             alt={activeSpot.title}
             className="w-full h-full object-cover object-center"
           />
-          {/* Cinematic Vignette Gradients */}
-          <div className="absolute inset-0 bg-gradient-to-t from-[#0B130E] via-[#0B130E]/60 to-black/20" />
-          <div className="hidden sm:block absolute inset-0 bg-gradient-to-r from-[#0B130E]/80 via-[#0B130E]/30 to-transparent" />
+          {/* Multi-Angle Atmospheric Gradient Overlays for High-Contrast Readability */}
+          <div className="absolute inset-0 bg-gradient-to-t from-[#070D09] via-[#070D09]/75 to-black/35" />
+          <div className="absolute inset-0 bg-gradient-to-r from-[#070D09] via-[#070D09]/80 md:via-[#070D09]/60 to-transparent" />
         </div>
 
-        {/* Top Badges & Stop Indicator */}
-        <div className="relative z-20 p-5 sm:p-8 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <span className="bg-[#FF6B4A] text-[#0B130E] text-xs font-black uppercase tracking-widest px-3 py-1 rounded-full shadow-[0_0_15px_rgba(255,107,74,0.4)]">
-              Stop #{currentIndex + 1} of {expeditionSpots.length}
+        {/* Top Badges & Radar Telemetry */}
+        <div className="relative z-20 p-4 sm:p-6 lg:p-8 flex items-center justify-between gap-2">
+          <div className="flex items-center gap-2 flex-wrap">
+            <span className="bg-[#FF6B4A] text-[#0B130E] text-xs font-black uppercase tracking-wider px-3.5 py-1.5 rounded-full shadow-[0_0_18px_rgba(255,107,74,0.5)] flex items-center gap-1.5">
+              <span>{catStyle.icon}</span>
+              <span>STOP #{currentIndex + 1} OF {expeditionSpots.length}</span>
             </span>
-            <span className="bg-[#111E16]/90 backdrop-blur-md border border-emerald-500/30 text-[#00F5A0] text-xs font-bold px-3 py-1 rounded-full">
+
+            <span className={`backdrop-blur-md border text-xs font-bold px-3 py-1.5 rounded-full ${catStyle.badge}`}>
               {activeSpot.category}
             </span>
           </div>
 
-          <span className="text-xs font-mono font-bold text-slate-400 bg-black/60 backdrop-blur-md px-3 py-1 rounded-full border border-white/10">
-            {activeSpot.latitude.toFixed(4)}° N, {activeSpot.longitude.toFixed(4)}° E
-          </span>
-        </div>
-
-        {/* Center Content with GSAP Stagger Animations */}
-        <div ref={contentRef} className="relative z-20 px-5 sm:px-8 py-4 max-w-2xl space-y-4">
-          <h3 className="stagger-reveal text-3xl sm:text-5xl font-black text-slate-100 tracking-tight leading-none drop-shadow-md">
-            {activeSpot.title}
-          </h3>
-
-          <p className="stagger-reveal text-sm sm:text-base text-slate-300 line-clamp-3 leading-relaxed drop-shadow">
-            {activeSpot.description}
-          </p>
-
-          {/* Highlights & Distance Tags */}
-          <div className="stagger-reveal flex flex-wrap items-center gap-2 pt-1 text-xs">
-            {activeSpot.distanceFromPakurStation && (
-              <span className="inline-flex items-center gap-1.5 bg-[#111E16]/90 border border-amber-500/30 text-amber-300 px-3 py-1 rounded-lg backdrop-blur-md font-semibold">
-                <MapPin size={13} className="text-amber-400" />
-                <span>{activeSpot.distanceFromPakurStation}</span>
-              </span>
-            )}
-
-            {activeSpot.bestTimeToVisit && (
-              <span className="inline-flex items-center gap-1.5 bg-[#111E16]/90 border border-emerald-500/30 text-emerald-300 px-3 py-1 rounded-lg backdrop-blur-md font-semibold">
-                <Calendar size={13} className="text-[#00F5A0]" />
-                <span>Season: {activeSpot.bestTimeToVisit}</span>
-              </span>
-            )}
-          </div>
-
-          {/* Action Navigation Buttons */}
-          <div className="stagger-reveal pt-2 flex flex-wrap items-center gap-3">
-            <Link
-              href={`/spots/${activeSpot.slug}`}
-              className="inline-flex items-center gap-2 bg-[#00F5A0] hover:bg-[#00e092] text-[#0B130E] font-extrabold text-xs sm:text-sm px-5 py-3 rounded-xl shadow-[0_0_20px_rgba(0,245,160,0.35)] active:scale-95 transition-all"
-            >
-              <span>Explore Complete Guide</span>
-              <ArrowRight size={15} />
-            </Link>
-
-            {/* 1-Tap Mobile Google Maps Navigation */}
-            <a
-              href={googleMapsUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 bg-[#FF6B4A] hover:bg-[#ff5530] text-[#0B130E] font-extrabold text-xs sm:text-sm px-5 py-3 rounded-xl shadow-[0_0_20px_rgba(255,107,74,0.35)] active:scale-95 transition-all"
-            >
-              <Navigation size={15} />
-              <span>See on Google Maps</span>
-            </a>
+          {/* Compass GPS Telemetry Pill */}
+          <div className="hidden sm:flex items-center gap-2 text-xs font-mono text-slate-300 bg-black/60 backdrop-blur-md px-3.5 py-1.5 rounded-full border border-white/10 shadow-lg">
+            <Compass size={13} className="text-[#00F5A0] animate-spin-slow" />
+            <span>{activeSpot.latitude.toFixed(4)}° N, {activeSpot.longitude.toFixed(4)}° E</span>
           </div>
         </div>
 
-        {/* Bottom Luxury Highway Track & Interactive Waypoints */}
-        <div className="relative z-20 px-5 sm:px-8 py-5 bg-[#08100B]/90 backdrop-blur-2xl border-t border-emerald-500/20">
-          {/* Active Stop Status Caption */}
-          <div className="flex items-center justify-between text-xs mb-3">
-            <div className="flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-[#00F5A0] animate-ping" />
-              <span className="text-slate-400">Current Milestone:</span>
-              <span className="text-[#00F5A0] font-bold">
-                Stop #{currentIndex + 1} — {activeSpot.title}
+        {/* Center Stage: Split Screen between Story Card and Interactive Up Next Deck */}
+        <div className="relative z-20 px-4 sm:px-6 lg:px-8 py-2 sm:py-4 grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
+          {/* Left Column: Primary Experience Story Card */}
+          <div ref={contentRef} className="lg:col-span-7 space-y-4 max-w-2xl">
+            <div className="stagger-reveal space-y-1.5">
+              <span className="text-xs font-bold uppercase tracking-widest text-[#00F5A0] flex items-center gap-1.5">
+                <Sparkles size={13} className="text-[#FF6B4A]" />
+                <span>Featured Destination</span>
               </span>
-            </div>
-            <span className="text-slate-500 text-[11px] hidden sm:inline">
-              Tap any waypoint or chip to travel directly
-            </span>
-          </div>
-
-          {/* Highway Progress Track Line */}
-          <div className="relative w-full h-8 flex items-center">
-            {/* The Base Road Channel */}
-            <div className="absolute inset-x-0 h-2 bg-[#060B08] rounded-full border border-emerald-500/20 overflow-hidden shadow-inner">
-              {/* Dynamic Illuminating Progress Gradient Fill */}
-              <div
-                className="h-full bg-gradient-to-r from-[#00F5A0] via-emerald-400 to-[#FF6B4A] transition-all duration-500 ease-out shadow-[0_0_12px_rgba(0,245,160,0.5)]"
-                style={{
-                  width: `${(currentIndex / Math.max(expeditionSpots.length - 1, 1)) * 100}%`,
-                }}
-              />
+              <h3 className="text-3xl sm:text-5xl font-black text-slate-100 tracking-tight leading-tight drop-shadow-md">
+                {activeSpot.title}
+              </h3>
             </div>
 
-            {/* Glowing Safari Rover Indicator (GSAP smoothly slides along the line) */}
-            <div
-              ref={vehicleRef}
-              className="absolute -top-3.5 -translate-x-1/2 z-30 transition-transform pointer-events-none"
-              style={{ left: '0%' }}
-            >
-              <div className="relative flex items-center justify-center w-8 h-8 rounded-full bg-[#0B130E] border-2 border-[#00F5A0] shadow-[0_0_20px_rgba(0,245,160,0.6)] text-[#00F5A0]">
-                {/* Sleek Off-road 4x4 Rover SVG Icon */}
-                <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.85 7h10.29l1.04 3H5.81l1.04-3zM19 17H5v-4.66l.12-.34h13.77l.11.34V17z"/>
-                  <circle cx="7.5" cy="14.5" r="1.5"/>
-                  <circle cx="16.5" cy="14.5" r="1.5"/>
-                </svg>
-                <span className="absolute -bottom-1 w-1.5 h-1.5 rounded-full bg-[#00F5A0] shadow-[0_0_6px_#00F5A0]" />
+            <p className="stagger-reveal text-sm sm:text-base text-slate-200 line-clamp-3 leading-relaxed drop-shadow font-normal">
+              {activeSpot.description}
+            </p>
+
+            {/* Travel Insights Pill Grid */}
+            <div className="stagger-reveal grid grid-cols-2 sm:grid-cols-3 gap-2.5 pt-1">
+              {activeSpot.distanceFromPakurStation && (
+                <div className="bg-[#111E16]/80 backdrop-blur-md border border-emerald-500/20 rounded-xl p-2.5">
+                  <span className="text-[10px] uppercase font-bold text-slate-400 block">Distance</span>
+                  <span className="text-xs font-bold text-amber-300 flex items-center gap-1 mt-0.5 truncate">
+                    <MapPin size={12} className="text-amber-400 shrink-0" />
+                    <span className="truncate">{activeSpot.distanceFromPakurStation.split(' from')[0]}</span>
+                  </span>
+                </div>
+              )}
+
+              {activeSpot.bestTimeToVisit && (
+                <div className="bg-[#111E16]/80 backdrop-blur-md border border-emerald-500/20 rounded-xl p-2.5">
+                  <span className="text-[10px] uppercase font-bold text-slate-400 block">Best Season</span>
+                  <span className="text-xs font-bold text-emerald-300 flex items-center gap-1 mt-0.5 truncate">
+                    <Calendar size={12} className="text-[#00F5A0] shrink-0" />
+                    <span className="truncate">{activeSpot.bestTimeToVisit}</span>
+                  </span>
+                </div>
+              )}
+
+              {activeSpot.timing && (
+                <div className="bg-[#111E16]/80 backdrop-blur-md border border-emerald-500/20 rounded-xl p-2.5 col-span-2 sm:col-span-1">
+                  <span className="text-[10px] uppercase font-bold text-slate-400 block">Visiting Hours</span>
+                  <span className="text-xs font-bold text-slate-200 flex items-center gap-1 mt-0.5 truncate">
+                    <Clock size={12} className="text-slate-400 shrink-0" />
+                    <span className="truncate">{activeSpot.timing}</span>
+                  </span>
+                </div>
+              )}
+            </div>
+
+            {/* Cultural or Highlight Teaser */}
+            {activeSpot.culturalNote && (
+              <div className="stagger-reveal p-3 rounded-xl bg-[#0B130E]/75 border border-emerald-500/25 text-xs text-slate-300 flex items-start gap-2 backdrop-blur-sm">
+                <Footprints size={15} className="text-[#FF6B4A] shrink-0 mt-0.5" />
+                <p className="line-clamp-2 leading-relaxed">
+                  <strong className="text-slate-200">Local Lore:</strong> {activeSpot.culturalNote}
+                </p>
               </div>
+            )}
+
+            {/* Action Buttons */}
+            <div className="stagger-reveal pt-2 flex flex-wrap items-center gap-3">
+              <Link
+                href={`/spots/${activeSpot.slug}`}
+                className="inline-flex items-center gap-2 bg-[#00F5A0] hover:bg-[#00e092] text-[#0B130E] font-black text-xs sm:text-sm px-6 py-3.5 rounded-xl shadow-[0_0_25px_rgba(0,245,160,0.4)] active:scale-95 transition-all group"
+              >
+                <span>Explore Complete Guide</span>
+                <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
+              </Link>
+
+              <a
+                href={googleMapsUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 bg-[#FF6B4A] hover:bg-[#ff5530] text-[#0B130E] font-black text-xs sm:text-sm px-6 py-3.5 rounded-xl shadow-[0_0_25px_rgba(255,107,74,0.35)] active:scale-95 transition-all"
+              >
+                <Navigation size={16} />
+                <span>See on Google Maps</span>
+              </a>
+            </div>
+          </div>
+
+          {/* Right Column: "Up Next" Interactive Preview Deck (Hooks the visitor) */}
+          <div className="hidden lg:flex lg:col-span-5 flex-col gap-3 justify-center pl-4">
+            <div className="flex items-center justify-between text-xs text-slate-400 font-bold uppercase tracking-wider mb-1">
+              <span className="flex items-center gap-1.5 text-[#00F5A0]">
+                <Eye size={13} />
+                <span>Coming Up on This Expedition:</span>
+              </span>
+              <span className="text-[10px] text-slate-500">Tap to jump</span>
             </div>
 
-            {/* Milestone Checkpoint Nodes */}
-            <div className="relative w-full flex items-center justify-between z-10 px-1">
-              {expeditionSpots.map((spot, idx) => {
-                const isActive = idx === currentIndex;
-                const isPassed = idx < currentIndex;
-                const shortTitle = formatStopTitle(spot.title);
+            {upcomingStops.map(({ spot: upcomingSpot, index: upcomingIdx }, idx) => (
+              <div
+                key={upcomingSpot.id}
+                onClick={() => handleSelectSpot(upcomingIdx)}
+                className="group relative cursor-pointer overflow-hidden rounded-2xl bg-[#0B130E]/85 hover:bg-[#111E16] border border-emerald-500/20 hover:border-[#00F5A0]/60 p-3 flex items-center gap-3.5 transition-all duration-300 hover:scale-[1.02] hover:shadow-[0_0_25px_rgba(0,245,160,0.2)] backdrop-blur-xl"
+              >
+                {/* Thumbnail with overlay stop badge */}
+                <div className="relative w-20 h-20 rounded-xl overflow-hidden shrink-0 bg-slate-900 border border-emerald-500/20">
+                  <img
+                    src={upcomingSpot.coverImage}
+                    alt={upcomingSpot.title}
+                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                  />
+                  <span className="absolute top-1 left-1 text-[9px] font-black px-1.5 py-0.5 rounded bg-black/80 text-[#00F5A0] border border-emerald-500/30">
+                    #{upcomingIdx + 1}
+                  </span>
+                </div>
 
-                return (
-                  <button
-                    key={spot.id}
-                    onClick={() => handleSelectSpot(idx)}
-                    title={`Stop #${idx + 1}: ${spot.title}`}
-                    className="group relative flex flex-col items-center focus:outline-none -my-2 py-2"
-                  >
-                    {/* Node Dot / Halo */}
+                {/* Details */}
+                <div className="flex-1 min-w-0 space-y-1">
+                  <span className="text-[10px] font-bold text-[#FF6B4A] uppercase tracking-wider block">
+                    {upcomingSpot.category}
+                  </span>
+                  <h4 className="text-sm font-black text-slate-100 group-hover:text-[#00F5A0] transition-colors truncate">
+                    {upcomingSpot.title}
+                  </h4>
+                  <p className="text-xs text-slate-400 line-clamp-1">
+                    {upcomingSpot.description}
+                  </p>
+                  <div className="flex items-center gap-2 text-[10px] text-slate-500 pt-0.5">
+                    <span>Jump to Stop #{upcomingIdx + 1}</span>
+                    <ArrowRight size={10} className="text-[#00F5A0] group-hover:translate-x-1 transition-transform" />
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* 3. Bottom Interactive Expedition Rail with Visual Postcard Thumbnails */}
+        <div className="relative z-20 px-4 sm:px-6 lg:px-8 py-4 bg-[#050A07]/92 backdrop-blur-2xl border-t border-emerald-500/20 mt-4">
+          <div className="flex items-center justify-between text-xs mb-3">
+            <div className="flex items-center gap-2 font-semibold">
+              <span className="w-2 h-2 rounded-full bg-[#00F5A0] shadow-[0_0_8px_#00F5A0]" />
+              <span className="text-slate-400">Expedition Route:</span>
+              <span className="text-slate-100 font-bold">
+                Stop {currentIndex + 1} of {expeditionSpots.length}
+              </span>
+            </div>
+
+            <div className="text-[11px] text-slate-400 hidden sm:flex items-center gap-2">
+              <kbd className="px-1.5 py-0.5 rounded bg-white/10 text-slate-300 font-mono text-[10px]">←</kbd>
+              <kbd className="px-1.5 py-0.5 rounded bg-white/10 text-slate-300 font-mono text-[10px]">→</kbd>
+              <span>Keyboard Navigation</span>
+            </div>
+          </div>
+
+          {/* Postcard Thumbnail Strip */}
+          <div className="flex items-center gap-3 overflow-x-auto pb-2 scrollbar-thin scrollbar-thumb-emerald-500/30">
+            {expeditionSpots.map((spot, idx) => {
+              const isActive = idx === currentIndex;
+              const isPassed = idx < currentIndex;
+              const shortTitle = formatStopTitle(spot.title);
+
+              return (
+                <button
+                  key={spot.id}
+                  onClick={() => handleSelectSpot(idx)}
+                  className={`group relative flex items-center gap-3 p-2 rounded-2xl text-left transition-all duration-300 shrink-0 min-w-[200px] sm:min-w-[220px] ${
+                    isActive
+                      ? 'bg-[#111E16] border-2 border-[#00F5A0] shadow-[0_0_20px_rgba(0,245,160,0.35)] scale-[1.03]'
+                      : isPassed
+                      ? 'bg-[#0B130E]/90 border border-emerald-500/25 hover:border-[#00F5A0]/60'
+                      : 'bg-[#0B130E]/70 border border-white/5 hover:border-emerald-500/30'
+                  }`}
+                >
+                  {/* Photo Thumbnail */}
+                  <div className="relative w-12 h-12 rounded-xl overflow-hidden shrink-0 bg-slate-900 border border-emerald-500/20">
+                    <img
+                      src={spot.coverImage}
+                      alt={spot.title}
+                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                    />
                     <div
-                      className={`relative flex items-center justify-center transition-all duration-300 ${
+                      className={`absolute top-0.5 left-0.5 text-[9px] font-black w-4 h-4 rounded-full flex items-center justify-center ${
                         isActive
-                          ? 'w-5 h-5 rounded-full bg-[#00F5A0] ring-4 ring-[#00F5A0]/25 shadow-[0_0_16px_#00F5A0] scale-110'
+                          ? 'bg-[#00F5A0] text-[#0B130E]'
                           : isPassed
-                          ? 'w-3.5 h-3.5 rounded-full bg-[#FF6B4A] shadow-[0_0_8px_rgba(255,107,74,0.4)] hover:scale-125'
-                          : 'w-3 h-3 rounded-full bg-[#16281E] border border-emerald-500/30 hover:border-[#00F5A0] hover:scale-125'
+                          ? 'bg-[#FF6B4A] text-[#0B130E]'
+                          : 'bg-black/80 text-slate-300'
                       }`}
                     >
-                      {isActive && (
-                        <span className="w-2 h-2 rounded-full bg-[#0B130E]" />
-                      )}
+                      {idx + 1}
                     </div>
+                  </div>
 
-                    {/* Milestone Stop Name (Desktop) */}
+                  {/* Title & Category Info */}
+                  <div className="flex-1 min-w-0">
                     <span
-                      className={`hidden lg:block absolute top-7 text-[11px] font-bold tracking-tight whitespace-nowrap transition-all duration-200 ${
-                        isActive
-                          ? 'text-[#00F5A0] font-black scale-105 drop-shadow-[0_0_8px_rgba(0,245,160,0.5)]'
-                          : isPassed
-                          ? 'text-slate-300'
-                          : 'text-slate-500 group-hover:text-slate-300'
+                      className={`text-[10px] font-bold uppercase tracking-wider block truncate ${
+                        isActive ? 'text-[#00F5A0]' : 'text-slate-400'
+                      }`}
+                    >
+                      {spot.category}
+                    </span>
+                    <h5
+                      className={`text-xs font-black truncate ${
+                        isActive ? 'text-white' : 'text-slate-200 group-hover:text-white'
                       }`}
                     >
                       {shortTitle}
+                    </h5>
+                    <span className="text-[10px] text-slate-500 block truncate">
+                      {spot.distanceFromPakurStation?.split(' from')[0] || 'Pakur District'}
                     </span>
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-
-          {/* Interactive Waypoint Chips Rail (Smooth scrollable on mobile & desktop) */}
-          <div className="mt-7 pt-3 border-t border-emerald-500/10 flex items-center gap-2 overflow-x-auto no-scrollbar pb-1">
-            {expeditionSpots.map((spot, idx) => {
-              const isActive = idx === currentIndex;
-              const shortTitle = formatStopTitle(spot.title);
-              return (
-                <button
-                  key={`chip-${spot.id}`}
-                  onClick={() => handleSelectSpot(idx)}
-                  className={`flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-all shrink-0 ${
-                    isActive
-                      ? 'bg-[#00F5A0] text-[#0B130E] font-bold shadow-[0_0_15px_rgba(0,245,160,0.3)] scale-105'
-                      : 'bg-[#0B130E] text-slate-400 border border-emerald-500/15 hover:border-emerald-500/40 hover:text-slate-200'
-                  }`}
-                >
-                  <span
-                    className={`w-4 h-4 rounded-full text-[10px] font-black flex items-center justify-center ${
-                      isActive ? 'bg-[#0B130E] text-[#00F5A0]' : 'bg-[#111E16] text-slate-400'
-                    }`}
-                  >
-                    {idx + 1}
-                  </span>
-                  <span>{shortTitle}</span>
+                  </div>
                 </button>
               );
             })}
