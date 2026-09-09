@@ -1,9 +1,10 @@
-'use client';
+﻿'use client';
 
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { TouristSpot, SpotCategory } from '@/types';
 import ImageUploader from './ImageUploader';
+import AdminLocationPicker from './AdminLocationPicker';
 import { Save, Loader2, MapPin, Tag, Clock, Train, DollarSign, Sparkles, FileText } from 'lucide-react';
 
 interface SpotFormProps {
@@ -31,8 +32,8 @@ export const SpotForm: React.FC<SpotFormProps> = ({ initialData, mode }) => {
     category: (initialData?.category || 'Waterfall') as SpotCategory,
     description: initialData?.description || '',
     longDescription: initialData?.longDescription || '',
-    latitude: initialData?.latitude?.toString() || '',
-    longitude: initialData?.longitude?.toString() || '',
+    latitude: initialData?.latitude?.toString() || '24.630000',
+    longitude: initialData?.longitude?.toString() || '87.840000',
     coverImage: initialData?.coverImage || '',
     galleryImages: initialData?.galleryImages || [] as string[],
     bestTimeToVisit: initialData?.bestTimeToVisit || '',
@@ -57,11 +58,22 @@ export const SpotForm: React.FC<SpotFormProps> = ({ initialData, mode }) => {
     e.preventDefault();
     setError('');
     setSuccess('');
+
+    const latNum = parseFloat(form.latitude);
+    const lngNum = parseFloat(form.longitude);
+
+    if (isNaN(latNum) || isNaN(lngNum)) {
+      setError('Please provide valid Latitude and Longitude coordinates.');
+      return;
+    }
+
     setIsSubmitting(true);
 
     try {
       const payload = {
         ...form,
+        latitude: latNum,
+        longitude: lngNum,
         highlights: form.highlights.split(',').map((h) => h.trim()).filter(Boolean),
         galleryImages: form.galleryImages,
       };
@@ -78,14 +90,14 @@ export const SpotForm: React.FC<SpotFormProps> = ({ initialData, mode }) => {
       const data = await res.json();
 
       if (!res.ok) {
-        setError(data.error || 'Failed to save');
+        setError(data.error || 'Failed to save location data');
         return;
       }
 
-      setSuccess(data.message);
-      setTimeout(() => router.push('/admin'), 1500);
+      setSuccess(data.message || 'Location saved successfully!');
+      setTimeout(() => router.push('/admin'), 1200);
     } catch {
-      setError('Network error');
+      setError('Network error: Could not reach server');
     } finally {
       setIsSubmitting(false);
     }
@@ -106,10 +118,14 @@ export const SpotForm: React.FC<SpotFormProps> = ({ initialData, mode }) => {
     <form onSubmit={handleSubmit} className="space-y-8 max-w-4xl">
       {/* Status Messages */}
       {error && (
-        <div className="bg-red-900/30 border border-red-500/40 text-red-300 px-4 py-3 rounded-xl text-sm">{error}</div>
+        <div className="bg-red-900/30 border border-red-500/40 text-red-300 px-4 py-3 rounded-xl text-sm font-medium">
+          {error}
+        </div>
       )}
       {success && (
-        <div className="bg-emerald-900/30 border border-emerald-500/40 text-emerald-300 px-4 py-3 rounded-xl text-sm">{success}</div>
+        <div className="bg-emerald-900/30 border border-emerald-500/40 text-emerald-300 px-4 py-3 rounded-xl text-sm font-medium flex items-center gap-2">
+          <span>{success}</span>
+        </div>
       )}
 
       {/* SECTION: Basic Info */}
@@ -190,13 +206,32 @@ export const SpotForm: React.FC<SpotFormProps> = ({ initialData, mode }) => {
         </div>
       </div>
 
-      {/* SECTION: GPS Coordinates */}
+      {/* SECTION: GPS Coordinates & Interactive Map */}
       <div className="bg-[#111E16] border border-emerald-500/15 rounded-2xl p-5 sm:p-6 space-y-5">
-        <h3 className="text-base font-bold text-slate-100 flex items-center gap-2">
-          <MapPin size={16} className="text-[#FF6B4A]" /> GPS Coordinates
-        </h3>
+        <div>
+          <h3 className="text-base font-bold text-slate-100 flex items-center gap-2">
+            <MapPin size={16} className="text-[#FF6B4A]" /> Location & Map Coordinates
+          </h3>
+          <p className="text-xs text-slate-400 mt-1">
+            Pinpoint your destination directly on the map, search a landmark, or enter coordinates below.
+          </p>
+        </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {/* Live Interactive Map Picker */}
+        <AdminLocationPicker
+          latitude={parseFloat(form.latitude) || 24.630000}
+          longitude={parseFloat(form.longitude) || 87.840000}
+          onChange={(lat, lng) => {
+            setForm((prev) => ({
+              ...prev,
+              latitude: lat.toFixed(6),
+              longitude: lng.toFixed(6),
+            }));
+          }}
+          spotTitle={form.title}
+        />
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2 border-t border-emerald-500/10">
           <div>
             <label className="block text-sm font-semibold text-slate-200 mb-1.5">Latitude *</label>
             <input
@@ -301,7 +336,7 @@ export const SpotForm: React.FC<SpotFormProps> = ({ initialData, mode }) => {
               type="text"
               value={form.timing}
               onChange={(e) => setForm((prev) => ({ ...prev, timing: e.target.value }))}
-              placeholder="06:00 AM – 05:00 PM"
+              placeholder="06:00 AM - 05:00 PM"
               className="w-full bg-[#0B130E] border border-emerald-500/20 rounded-xl px-4 py-2.5 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-[#FF6B4A] transition-all"
             />
           </div>

@@ -1,4 +1,4 @@
-import fs from 'fs';
+﻿import fs from 'fs';
 import path from 'path';
 import { TouristSpot } from '@/types';
 import { TOURIST_SPOTS } from './mockData';
@@ -49,9 +49,14 @@ export function saveSpotsToDb(spots: TouristSpot[]): boolean {
     if (!fs.existsSync(DATA_DIR)) {
       fs.mkdirSync(DATA_DIR, { recursive: true });
     }
-    const tempFile = DATA_FILE + '.tmp';
-    fs.writeFileSync(tempFile, JSON.stringify(spots, null, 2), 'utf-8');
-    fs.renameSync(tempFile, DATA_FILE);
+    const jsonStr = JSON.stringify(spots, null, 2);
+    try {
+      const tempFile = DATA_FILE + '.tmp';
+      fs.writeFileSync(tempFile, jsonStr, 'utf-8');
+      fs.renameSync(tempFile, DATA_FILE);
+    } catch {
+      fs.writeFileSync(DATA_FILE, jsonStr, 'utf-8');
+    }
     return true;
   } catch (err) {
     console.error('Failed to save spots to DB:', err);
@@ -123,9 +128,41 @@ export async function getSpotBySlugAsync(slug: string): Promise<TouristSpot | nu
   return getSpotBySlugFromDb(slug);
 }
 
+export async function getSpotByIdAsync(id: string): Promise<TouristSpot | null> {
+  try {
+    const supabase = getSupabaseAdmin();
+    if (supabase) {
+      const { data, error } = await supabase
+        .from('tourist_spots')
+        .select('*')
+        .eq('id', id)
+        .maybeSingle();
+
+      if (!error && data) {
+        const mapped = mapSupabaseRowToSpot(data);
+        const spots = getAllSpotsFromDb();
+        const idx = spots.findIndex((s) => s.id === id);
+        if (idx >= 0) {
+          spots[idx] = mapped;
+        } else {
+          spots.unshift(mapped);
+        }
+        saveSpotsToDb(spots);
+        return mapped;
+      }
+    }
+  } catch (err) {
+    console.warn('[Supabase Id Sync] Fallback to local DB:', err);
+  }
+  return getSpotByIdFromDb(id);
+}
+
 export async function createSpotInDb(data: Partial<TouristSpot>): Promise<TouristSpot> {
   const spots = getAllSpotsFromDb();
   const id = crypto.randomUUID();
+  const lat = typeof data.latitude === 'string' ? parseFloat(data.latitude) : Number(data.latitude);
+  const lng = typeof data.longitude === 'string' ? parseFloat(data.longitude) : Number(data.longitude);
+
   const newSpot: TouristSpot = {
     id,
     title: data.title || '',
@@ -133,8 +170,8 @@ export async function createSpotInDb(data: Partial<TouristSpot>): Promise<Touris
     category: data.category || 'Waterfall',
     description: data.description || '',
     longDescription: data.longDescription || '',
-    latitude: typeof data.latitude === 'string' ? parseFloat(data.latitude) : (data.latitude || 24.63),
-    longitude: typeof data.longitude === 'string' ? parseFloat(data.longitude) : (data.longitude || 87.84),
+    latitude: !isNaN(lat) ? lat : 24.63,
+    longitude: !isNaN(lng) ? lng : 87.84,
     coverImage: data.coverImage || '',
     galleryImages: data.galleryImages || [],
     bestTimeToVisit: data.bestTimeToVisit || 'Oct to Mar',
@@ -184,24 +221,41 @@ export async function createSpotInDb(data: Partial<TouristSpot>): Promise<Touris
 }
 
 export async function updateSpotInDb(id: string, data: Partial<TouristSpot>): Promise<TouristSpot | null> {
-  const spots = getAllSpotsFromDb();
-  const index = spots.findIndex((s) => s.id === id);
-  if (index === -1) return null;
+  let spots = getAllSpotsFromDb();
+  let index = spots.findIndex((s) => s.id === id);
 
-  const existing = spots[index];
+  let existing = index !== -1 ? spots[index] : null;
+  if (!existing) {
+    const supabaseSpot = await getSpotByIdAsync(id);
+    if (supabaseSpot) {
+      spots = getAllSpotsFromDb();
+      index = spots.findIndex((s) => s.id === id);
+      existing = index !== -1 ? spots[index] : supabaseSpot;
+    }
+  }
+
+  if (!existing) return null;
+
+  const parsedLat = data.latitude !== undefined
+    ? (typeof data.latitude === 'string' ? parseFloat(data.latitude) : Number(data.latitude))
+    : existing.latitude;
+  const parsedLng = data.longitude !== undefined
+    ? (typeof data.longitude === 'string' ? parseFloat(data.longitude) : Number(data.longitude))
+    : existing.longitude;
+
   const updatedSpot: TouristSpot = {
     ...existing,
     ...data,
     id,
-    latitude: data.latitude !== undefined
-      ? (typeof data.latitude === 'string' ? parseFloat(data.latitude) : data.latitude)
-      : existing.latitude,
-    longitude: data.longitude !== undefined
-      ? (typeof data.longitude === 'string' ? parseFloat(data.longitude) : data.longitude)
-      : existing.longitude,
+    latitude: !isNaN(parsedLat) ? parsedLat : existing.latitude,
+    longitude: !isNaN(parsedLng) ? parsedLng : existing.longitude,
   };
 
-  spots[index] = updatedSpot;
+  if (index !== -1) {
+    spots[index] = updatedSpot;
+  } else {
+    spots.unshift(updatedSpot);
+  }
   saveSpotsToDb(spots);
 
   try {

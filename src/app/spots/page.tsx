@@ -23,7 +23,7 @@ export default function SpotsDirectoryPage() {
   useEffect(() => {
     async function loadSpots() {
       try {
-        const res = await fetch('/api/admin/spots');
+        const res = await fetch('/api/admin/spots', { cache: 'no-store' });
         if (res.ok) {
           const data = await res.json();
           if (data.spots && data.spots.length > 0) {

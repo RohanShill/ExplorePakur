@@ -216,15 +216,28 @@ export const MapComponent: React.FC<MapComponentProps> = ({
     );
   };
 
-  // Merge spots with key landmarks
+  // Merge spots with key landmarks (deduplicated by both ID and slug)
   const allDisplaySpots = React.useMemo(() => {
     const spotMap = new Map<string, any>();
-    spots.forEach(s => spotMap.set(s.id, s));
-    ADDITIONAL_MAJOR_LANDMARKS.forEach(landmark => {
-      if (landmark.id && !spotMap.has(landmark.id)) {
+    const slugSet = new Set<string>();
+
+    spots.forEach((s) => {
+      spotMap.set(s.id, s);
+      if (s.slug) {
+        slugSet.add(s.slug.toLowerCase().trim());
+      }
+    });
+
+    ADDITIONAL_MAJOR_LANDMARKS.forEach((landmark) => {
+      const alreadyHasId = landmark.id && spotMap.has(landmark.id);
+      const alreadyHasSlug = landmark.slug && slugSet.has(landmark.slug.toLowerCase().trim());
+
+      // Only add fallback landmark if no matching spot is present from the database
+      if (!alreadyHasId && !alreadyHasSlug && landmark.id) {
         spotMap.set(landmark.id, landmark);
       }
     });
+
     return Array.from(spotMap.values());
   }, [spots]);
 

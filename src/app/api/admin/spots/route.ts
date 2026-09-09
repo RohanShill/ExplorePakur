@@ -1,3 +1,6 @@
+﻿export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 import { verifyAdminAuth } from '@/lib/adminAuth';
 import { NextRequest, NextResponse } from 'next/server';
 import { getAllSpotsAsync, getSpotBySlugAsync, createSpotInDb } from '@/lib/spotsDb';
@@ -16,11 +19,25 @@ export async function GET(request: NextRequest) {
     if (!spot) {
       return NextResponse.json({ error: 'Spot not found' }, { status: 404 });
     }
-    return NextResponse.json({ spot });
+    return NextResponse.json(
+      { spot },
+      {
+        headers: {
+          'Cache-Control': 'no-store, max-age=0, must-revalidate',
+        },
+      }
+    );
   }
 
   const spots = await getAllSpotsAsync();
-  return NextResponse.json({ spots });
+  return NextResponse.json(
+    { spots },
+    {
+      headers: {
+        'Cache-Control': 'no-store, max-age=0, must-revalidate',
+      },
+    }
+  );
 }
 
 // POST /api/admin/spots - Create a new spot with persistent Supabase cloud & local storage
@@ -34,7 +51,7 @@ export async function POST(request: NextRequest) {
 
     // Validate required fields
     const { title, slug, category, description, latitude, longitude, coverImage } = body;
-    if (!title || !slug || !category || !description || !latitude || !longitude || !coverImage) {
+    if (!title || !slug || !category || !description || latitude === undefined || longitude === undefined || !coverImage) {
       return NextResponse.json(
         { error: 'Missing required fields: Title, Slug, Category, Description, Latitude, Longitude, Cover Image' },
         { status: 400 }
@@ -49,7 +66,15 @@ export async function POST(request: NextRequest) {
 
     const newSpot = await createSpotInDb(body);
 
-    return NextResponse.json({ spot: newSpot, message: 'Spot created successfully and saved to cloud database!' }, { status: 201 });
+    return NextResponse.json(
+      { spot: newSpot, message: 'Location created and saved successfully!' },
+      {
+        status: 201,
+        headers: {
+          'Cache-Control': 'no-store, max-age=0, must-revalidate',
+        },
+      }
+    );
   } catch (error) {
     console.error('Error creating spot:', error);
     return NextResponse.json({ error: 'Invalid request body' }, { status: 400 });

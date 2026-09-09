@@ -1,21 +1,31 @@
+﻿export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 import { verifyAdminAuth } from '@/lib/adminAuth';
 import { NextRequest, NextResponse } from 'next/server';
-import { getSpotByIdFromDb, updateSpotInDb, deleteSpotInDb } from '@/lib/spotsDb';
+import { getSpotByIdAsync, updateSpotInDb, deleteSpotInDb } from '@/lib/spotsDb';
 
 function verifyAuth(request: NextRequest): boolean {
   return verifyAdminAuth(request);
 }
 
-// GET /api/admin/spots/[id] - Get single spot
+// GET /api/admin/spots/[id] - Get single spot with cloud + local fallback
 export async function GET(
   request: NextRequest,
   { params }: { params: { id: string } }
 ) {
-  const spot = getSpotByIdFromDb(params.id);
+  const spot = await getSpotByIdAsync(params.id);
   if (!spot) {
     return NextResponse.json({ error: 'Spot not found' }, { status: 404 });
   }
-  return NextResponse.json({ spot });
+  return NextResponse.json(
+    { spot },
+    {
+      headers: {
+        'Cache-Control': 'no-store, max-age=0, must-revalidate',
+      },
+    }
+  );
 }
 
 // PUT /api/admin/spots/[id] - Update spot in persistent DB
@@ -35,7 +45,14 @@ export async function PUT(
       return NextResponse.json({ error: 'Spot not found' }, { status: 404 });
     }
 
-    return NextResponse.json({ spot: updatedSpot, message: 'Spot updated successfully in cloud database!' });
+    return NextResponse.json(
+      { spot: updatedSpot, message: 'Location updated and saved successfully!' },
+      {
+        headers: {
+          'Cache-Control': 'no-store, max-age=0, must-revalidate',
+        },
+      }
+    );
   } catch (err) {
     console.error('Error updating spot:', err);
     return NextResponse.json({ error: 'Invalid request body' }, { status: 400 });
@@ -56,5 +73,5 @@ export async function DELETE(
     return NextResponse.json({ error: 'Spot not found' }, { status: 404 });
   }
 
-  return NextResponse.json({ message: 'Spot removed permanently from cloud database' });
+  return NextResponse.json({ message: 'Spot removed permanently from database' });
 }

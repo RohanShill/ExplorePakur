@@ -43,7 +43,7 @@ export default function AdminDashboardPage() {
 
   const fetchSpots = async () => {
     try {
-      const res = await fetch('/api/admin/spots');
+      const res = await fetch('/api/admin/spots', { cache: 'no-store' });
       if (res.status === 401) {
         router.push('/admin/login');
         return;
