@@ -89,6 +89,9 @@ export const metadata: Metadata = {
       "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1200&q=80",
     ],
   },
+  verification: {
+    google: "google5a6492daf2292120",
+  },
   robots: {
     index: true,
     follow: true,
@@ -222,6 +225,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={`dark ${inter.variable}`}>
       <head>
+        <meta name="google-site-verification" content="google5a6492daf2292120" />
         <link
           rel="stylesheet"
           href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
