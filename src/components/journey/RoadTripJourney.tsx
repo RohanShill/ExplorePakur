@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React, { useRef, useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
@@ -16,12 +16,34 @@ import {
   Calendar,
   Clock,
   ArrowRight,
+  CheckCircle2,
 } from 'lucide-react';
 import { getGoogleMapsDirectionsUrl } from '@/lib/utils';
 
 interface RoadTripJourneyProps {
   spots: TouristSpot[];
 }
+
+// Smart formatter for stop titles to avoid duplicates and awkward truncations
+const formatStopTitle = (title: string): string => {
+  let cleaned = title
+    .replace(/^Hiranpur\s+/i, '')
+    .replace(/\s*&\s*Forest Ashram/i, '')
+    .replace(/\s*&\s*Tribal Craft Hub/i, '')
+    .replace(/\s*&\s*Shrine/i, '')
+    .replace(/\s*&\s*Caves/i, '')
+    .replace(/Heritage Palace/i, 'Palace')
+    .replace(/Murmu Park/i, 'Park')
+    .replace(/Reserve & Stream/i, '')
+    .replace(/Forest Reserve/i, '')
+    .trim();
+
+  if (cleaned.length < 3) {
+    cleaned = title.split(' ').slice(0, 2).join(' ');
+  }
+
+  return cleaned.length > 18 ? cleaned.slice(0, 16) + '…' : cleaned;
+};
 
 export const RoadTripJourney: React.FC<RoadTripJourneyProps> = ({ spots }) => {
   // Use first 8 spots or all available for the expedition tour
@@ -88,7 +110,7 @@ export const RoadTripJourney: React.FC<RoadTripJourneyProps> = ({ spots }) => {
 
       // 3. Drive the Mini Safari Vehicle on Highway Track
       if (vehicleRef.current && expeditionSpots.length > 0) {
-        const percent = (currentIndex / (expeditionSpots.length - 1)) * 100;
+        const percent = (currentIndex / Math.max(expeditionSpots.length - 1, 1)) * 100;
         gsap.to(vehicleRef.current, {
           left: `${percent}%`,
           duration: 0.7,
@@ -178,36 +200,35 @@ export const RoadTripJourney: React.FC<RoadTripJourneyProps> = ({ spots }) => {
 
   const googleMapsUrl = getGoogleMapsDirectionsUrl(
     activeSpot.latitude,
-    activeSpot.longitude,
-    activeSpot.title
+    activeSpot.longitude
   );
 
   return (
-    <div className="relative w-full max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-8">
-      {/* Section Header */}
-      <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3 mb-6">
-        <div>
-          <div className="inline-flex items-center gap-1.5 text-[#FF6B4A] text-xs font-black uppercase tracking-widest">
-            <Compass size={14} className="animate-spin-slow" />
-            <span>Interactive Road Trip Expedition</span>
+    <div className="w-full space-y-4">
+      {/* Expedition Journey Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 px-1">
+        <div className="space-y-1">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#111E16] border border-emerald-500/30 text-[#00F5A0] text-xs font-bold shadow-[0_0_12px_rgba(0,245,160,0.2)]">
+            <Compass size={14} className="animate-spin-slow text-[#FF6B4A]" />
+            <span className="uppercase tracking-wider">Scenic Circuit Route</span>
           </div>
-          <h2 className="text-2xl sm:text-4xl font-black text-slate-100 tracking-tight mt-1">
-            Pakur Scenic Safari Route
+          <h2 className="text-2xl sm:text-3xl font-black text-slate-100 tracking-tight">
+            Pakur Road Trip Expedition
           </h2>
-          <p className="text-xs sm:text-sm text-slate-400 mt-1 max-w-xl">
-            Tour through the Rajmahal hills, river shallows, ancient cave sanctums, and tribal monuments.
+          <p className="text-xs sm:text-sm text-slate-400">
+            A curated virtual voyage connecting Pakur's top waterfalls, ancient caves, and heritage landmarks.
           </p>
         </div>
 
-        {/* Play / Pause & Prev / Next Controls */}
+        {/* Carousel Action Controls */}
         <div className="flex items-center gap-2 self-start sm:self-auto">
           <button
             onClick={() => setIsPlaying(!isPlaying)}
-            className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-[#111E16] hover:bg-[#16281E] border border-emerald-500/20 text-slate-300 text-xs font-bold transition-all"
-            title={isPlaying ? 'Pause Auto Tour' : 'Resume Auto Tour'}
+            aria-label={isPlaying ? 'Pause Auto-tour' : 'Play Auto-tour'}
+            className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-[#111E16] hover:bg-[#16281E] border border-emerald-500/20 text-xs font-bold text-slate-300 active:scale-95 transition-all"
           >
-            {isPlaying ? <Pause size={13} className="text-[#00F5A0]" /> : <Play size={13} className="text-[#FF6B4A]" />}
-            <span className="hidden sm:inline">{isPlaying ? 'Auto-Tour' : 'Paused'}</span>
+            {isPlaying ? <Pause size={14} className="text-[#FF6B4A]" /> : <Play size={14} className="text-[#00F5A0]" />}
+            <span>{isPlaying ? 'Pause Tour' : 'Resume'}</span>
           </button>
 
           <button
@@ -323,58 +344,125 @@ export const RoadTripJourney: React.FC<RoadTripJourneyProps> = ({ spots }) => {
           </div>
         </div>
 
-        {/* Bottom Horizontal Mini-Highway Track with Animated Safari Vehicle */}
-        <div className="relative z-20 px-4 sm:px-8 py-5 bg-[#0B130E]/85 backdrop-blur-xl border-t border-emerald-500/20">
+        {/* Bottom Luxury Highway Track & Interactive Waypoints */}
+        <div className="relative z-20 px-5 sm:px-8 py-5 bg-[#08100B]/90 backdrop-blur-2xl border-t border-emerald-500/20">
+          {/* Active Stop Status Caption */}
+          <div className="flex items-center justify-between text-xs mb-3">
+            <div className="flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-[#00F5A0] animate-ping" />
+              <span className="text-slate-400">Current Milestone:</span>
+              <span className="text-[#00F5A0] font-bold">
+                Stop #{currentIndex + 1} — {activeSpot.title}
+              </span>
+            </div>
+            <span className="text-slate-500 text-[11px] hidden sm:inline">
+              Tap any waypoint or chip to travel directly
+            </span>
+          </div>
+
+          {/* Highway Progress Track Line */}
           <div className="relative w-full h-8 flex items-center">
-            {/* The Road Surface Strip */}
-            <div className="absolute inset-x-0 h-3 bg-[#111E16] rounded-full border border-emerald-900/40 overflow-hidden">
-              {/* Dashed Center Road Line */}
-              <div className="w-full h-full border-b border-dashed border-[#FF6B4A]/50 -mt-1.5" />
+            {/* The Base Road Channel */}
+            <div className="absolute inset-x-0 h-2 bg-[#060B08] rounded-full border border-emerald-500/20 overflow-hidden shadow-inner">
+              {/* Dynamic Illuminating Progress Gradient Fill */}
+              <div
+                className="h-full bg-gradient-to-r from-[#00F5A0] via-emerald-400 to-[#FF6B4A] transition-all duration-500 ease-out shadow-[0_0_12px_rgba(0,245,160,0.5)]"
+                style={{
+                  width: `${(currentIndex / Math.max(expeditionSpots.length - 1, 1)) * 100}%`,
+                }}
+              />
             </div>
 
-            {/* Animated 4x4 Safari Jeep Icon (GSAP position tracking) */}
+            {/* Glowing Safari Rover Indicator (GSAP smoothly slides along the line) */}
             <div
               ref={vehicleRef}
-              className="absolute -top-3.5 -translate-x-1/2 z-20 transition-transform pointer-events-none"
+              className="absolute -top-3.5 -translate-x-1/2 z-30 transition-transform pointer-events-none"
               style={{ left: '0%' }}
             >
-              <div className="relative flex items-center justify-center w-8 h-8 rounded-full bg-[#111E16] border-2 border-[#00F5A0] shadow-[0_0_15px_#00F5A0] text-sm animate-bounce-subtle">
-                <span>🚙</span>
+              <div className="relative flex items-center justify-center w-8 h-8 rounded-full bg-[#0B130E] border-2 border-[#00F5A0] shadow-[0_0_20px_rgba(0,245,160,0.6)] text-[#00F5A0]">
+                {/* Sleek Off-road 4x4 Rover SVG Icon */}
+                <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.85 7h10.29l1.04 3H5.81l1.04-3zM19 17H5v-4.66l.12-.34h13.77l.11.34V17z"/>
+                  <circle cx="7.5" cy="14.5" r="1.5"/>
+                  <circle cx="16.5" cy="14.5" r="1.5"/>
+                </svg>
+                <span className="absolute -bottom-1 w-1.5 h-1.5 rounded-full bg-[#00F5A0] shadow-[0_0_6px_#00F5A0]" />
               </div>
             </div>
 
-            {/* Milestone Checkpoint Dots along the road */}
-            <div className="relative w-full flex items-center justify-between z-10">
+            {/* Milestone Checkpoint Nodes */}
+            <div className="relative w-full flex items-center justify-between z-10 px-1">
               {expeditionSpots.map((spot, idx) => {
                 const isActive = idx === currentIndex;
                 const isPassed = idx < currentIndex;
+                const shortTitle = formatStopTitle(spot.title);
+
                 return (
                   <button
                     key={spot.id}
                     onClick={() => handleSelectSpot(idx)}
-                    title={spot.title}
-                    className="group relative flex flex-col items-center focus:outline-none"
+                    title={`Stop #${idx + 1}: ${spot.title}`}
+                    className="group relative flex flex-col items-center focus:outline-none -my-2 py-2"
                   >
-                    <span
-                      className={`w-3.5 h-3.5 rounded-full transition-all duration-300 ${
+                    {/* Node Dot / Halo */}
+                    <div
+                      className={`relative flex items-center justify-center transition-all duration-300 ${
                         isActive
-                          ? 'bg-[#00F5A0] ring-4 ring-[#00F5A0]/30 scale-125'
+                          ? 'w-5 h-5 rounded-full bg-[#00F5A0] ring-4 ring-[#00F5A0]/25 shadow-[0_0_16px_#00F5A0] scale-110'
                           : isPassed
-                          ? 'bg-[#FF6B4A]'
-                          : 'bg-zinc-700 hover:bg-zinc-500'
-                      }`}
-                    />
-                    <span
-                      className={`hidden md:block absolute top-5 text-[10px] font-bold tracking-tight whitespace-nowrap transition-colors ${
-                        isActive ? 'text-[#00F5A0]' : 'text-slate-400 group-hover:text-slate-200'
+                          ? 'w-3.5 h-3.5 rounded-full bg-[#FF6B4A] shadow-[0_0_8px_rgba(255,107,74,0.4)] hover:scale-125'
+                          : 'w-3 h-3 rounded-full bg-[#16281E] border border-emerald-500/30 hover:border-[#00F5A0] hover:scale-125'
                       }`}
                     >
-                      {spot.title.split(' ')[0]}
+                      {isActive && (
+                        <span className="w-2 h-2 rounded-full bg-[#0B130E]" />
+                      )}
+                    </div>
+
+                    {/* Milestone Stop Name (Desktop) */}
+                    <span
+                      className={`hidden lg:block absolute top-7 text-[11px] font-bold tracking-tight whitespace-nowrap transition-all duration-200 ${
+                        isActive
+                          ? 'text-[#00F5A0] font-black scale-105 drop-shadow-[0_0_8px_rgba(0,245,160,0.5)]'
+                          : isPassed
+                          ? 'text-slate-300'
+                          : 'text-slate-500 group-hover:text-slate-300'
+                      }`}
+                    >
+                      {shortTitle}
                     </span>
                   </button>
                 );
               })}
             </div>
+          </div>
+
+          {/* Interactive Waypoint Chips Rail (Smooth scrollable on mobile & desktop) */}
+          <div className="mt-7 pt-3 border-t border-emerald-500/10 flex items-center gap-2 overflow-x-auto no-scrollbar pb-1">
+            {expeditionSpots.map((spot, idx) => {
+              const isActive = idx === currentIndex;
+              const shortTitle = formatStopTitle(spot.title);
+              return (
+                <button
+                  key={`chip-${spot.id}`}
+                  onClick={() => handleSelectSpot(idx)}
+                  className={`flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-all shrink-0 ${
+                    isActive
+                      ? 'bg-[#00F5A0] text-[#0B130E] font-bold shadow-[0_0_15px_rgba(0,245,160,0.3)] scale-105'
+                      : 'bg-[#0B130E] text-slate-400 border border-emerald-500/15 hover:border-emerald-500/40 hover:text-slate-200'
+                  }`}
+                >
+                  <span
+                    className={`w-4 h-4 rounded-full text-[10px] font-black flex items-center justify-center ${
+                      isActive ? 'bg-[#0B130E] text-[#00F5A0]' : 'bg-[#111E16] text-slate-400'
+                    }`}
+                  >
+                    {idx + 1}
+                  </span>
+                  <span>{shortTitle}</span>
+                </button>
+              );
+            })}
           </div>
         </div>
       </div>
