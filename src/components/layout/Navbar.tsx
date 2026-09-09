@@ -1,46 +1,60 @@
-'use client';
+﻿"use client";
 
-import React, { useState } from 'react';
-import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-import { Menu, X, Compass, Map, BookOpen, Trees } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import React, { useState, useEffect } from "react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { Menu, X, Compass, MapPin, BookOpen, ChevronRight } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 export const Navbar: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
   const pathname = usePathname();
 
+  useEffect(() => {
+    const handler = () => setScrolled(window.scrollY > 30);
+    window.addEventListener("scroll", handler, { passive: true });
+    return () => window.removeEventListener("scroll", handler);
+  }, []);
+
+  // Close drawer on route change
+  useEffect(() => { setIsOpen(false); }, [pathname]);
+
   const navLinks = [
-    { name: 'Destinations', href: '/spots', icon: Compass },
-    { name: 'District Map', href: '/#map-section', icon: Map },
-    { name: 'Santhal Heritage', href: '/#heritage-section', icon: BookOpen },
+    { name: "Destinations", href: "/spots",            icon: Compass  },
+    { name: "District Map", href: "/#map-section",     icon: MapPin   },
+    { name: "Heritage",     href: "/#heritage-section",icon: BookOpen },
   ];
 
   return (
-    <header className="sticky top-0 z-50 w-full backdrop-blur-xl bg-[#0B130E]/80 border-b border-emerald-900/20 transition-colors">
+    <header
+      className={cn(
+        "fixed top-0 z-50 w-full transition-all duration-500",
+        scrolled || isOpen
+          ? "glass-nav shadow-[0_4px_30px_rgba(0,0,0,0.6)]"
+          : "bg-transparent border-b border-transparent"
+      )}
+    >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
-          {/* Brand Logo */}
-          <Link href="/" className="flex items-center gap-2.5 group">
-            <div className="relative h-10 w-10 rounded-xl overflow-hidden border border-emerald-500/40 shadow-[0_0_15px_rgba(0,245,160,0.3)] group-hover:scale-105 transition-transform shrink-0">
-              <img
-                src="/logo.png"
-                alt="ExplorePakur Martello Tower Logo"
-                className="h-full w-full object-cover"
-              />
+        <div className="flex items-center justify-between h-16 sm:h-20">
+
+          {/* Brand */}
+          <Link href="/" className="flex items-center gap-2.5 sm:gap-3 group shrink-0">
+            <div className="relative h-9 w-9 sm:h-11 sm:w-11 rounded-xl overflow-hidden border border-[rgba(212,169,66,0.35)] shadow-[0_0_18px_rgba(212,169,66,0.2)] group-hover:shadow-[0_0_28px_rgba(212,169,66,0.35)] transition-all duration-300">
+              <img src="/logo.png" alt="ExplorePakur Logo" className="h-full w-full object-cover" />
             </div>
             <div className="flex flex-col">
-              <span className="text-lg font-black tracking-tight text-slate-100 font-sans">
-                Explore<span className="text-[#FF6B4A]">Pakur</span>
+              <span className="text-base sm:text-[1.15rem] font-bold tracking-tight text-[#F5F0E8] font-serif leading-none">
+                Explore<span className="text-gold-gradient">Pakur</span>
               </span>
-              <span className="text-[10px] uppercase font-extrabold tracking-widest text-amber-400/90 -mt-1">
+              <span className="text-[8px] sm:text-[9px] uppercase font-semibold tracking-[0.18em] text-[#7A9180] mt-0.5 font-body">
                 Jharkhand Eco-Tourism
               </span>
             </div>
           </Link>
 
-          {/* Desktop Navigation Links */}
-          <nav className="hidden md:flex items-center gap-1.5">
+          {/* Desktop nav */}
+          <nav className="hidden md:flex items-center gap-0.5">
             {navLinks.map((link) => {
               const Icon = link.icon;
               const isActive = pathname === link.href;
@@ -49,46 +63,52 @@ export const Navbar: React.FC = () => {
                   key={link.name}
                   href={link.href}
                   className={cn(
-                    'flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-semibold transition-all',
-                    isActive
-                      ? 'bg-[#111E16] text-[#00F5A0] border border-emerald-500/30 shadow-[0_0_15px_rgba(0,245,160,0.15)]'
-                      : 'text-slate-400 hover:text-slate-100 hover:bg-[#111E16]/60'
+                    "relative flex items-center gap-2 px-3.5 py-2.5 rounded-lg text-sm font-medium transition-all duration-300 font-body group",
+                    isActive ? "text-[#D4A942]" : "text-[#7A9180] hover:text-[#F5F0E8]"
                   )}
                 >
-                  <Icon size={16} className={isActive ? 'text-[#00F5A0]' : 'text-slate-400'} />
+                  <Icon size={14} />
                   <span>{link.name}</span>
+                  <span className={cn(
+                    "absolute bottom-0 left-4 right-4 h-px bg-gradient-to-r from-transparent via-[#D4A942] to-transparent transition-opacity duration-300",
+                    isActive ? "opacity-100" : "opacity-0 group-hover:opacity-60"
+                  )} />
                 </Link>
               );
             })}
           </nav>
 
-          {/* Direct CTA */}
-          <div className="hidden md:flex items-center gap-3">
+          {/* Desktop CTA + Mobile toggle */}
+          <div className="flex items-center gap-2">
             <Link
               href="/spots"
-              className="inline-flex items-center gap-1.5 text-xs font-bold bg-[#00F5A0] hover:bg-[#00e092] text-[#0B130E] px-4 py-2.5 rounded-xl shadow-[0_0_20px_rgba(0,245,160,0.25)] transition-all active:scale-95"
+              className="hidden md:inline-flex items-center gap-2 text-xs font-semibold bg-transparent border border-[rgba(212,169,66,0.4)] text-[#D4A942] hover:bg-[rgba(212,169,66,0.08)] hover:border-[rgba(212,169,66,0.7)] px-4 py-2.5 rounded-xl transition-all duration-300 font-body"
             >
-              <Trees size={14} />
-              <span>Explore All Spots</span>
+              <Compass size={13} />
+              Explore Now
+              <ChevronRight size={12} />
             </Link>
-          </div>
 
-          {/* Mobile Menu Button */}
-          <div className="flex md:hidden items-center">
+            {/* Mobile toggle */}
             <button
               onClick={() => setIsOpen(!isOpen)}
-              className="p-2 rounded-xl text-slate-300 hover:bg-[#111E16] focus:outline-none"
-              aria-label="Toggle navigation menu"
+              className="flex md:hidden items-center justify-center h-9 w-9 rounded-xl text-[#7A9180] hover:text-[#F5F0E8] hover:bg-[rgba(212,169,66,0.08)] border border-transparent hover:border-[rgba(212,169,66,0.15)] transition-all"
+              aria-label="Toggle menu"
             >
-              {isOpen ? <X size={24} /> : <Menu size={24} />}
+              {isOpen ? <X size={20} /> : <Menu size={20} />}
             </button>
           </div>
         </div>
       </div>
 
       {/* Mobile Drawer */}
-      {isOpen && (
-        <div className="md:hidden border-b border-emerald-900/30 bg-[#0B130E]/95 backdrop-blur-2xl px-4 pt-2 pb-6 space-y-2">
+      <div
+        className={cn(
+          "md:hidden overflow-hidden transition-all duration-300 ease-in-out",
+          isOpen ? "max-h-80 opacity-100" : "max-h-0 opacity-0 pointer-events-none"
+        )}
+      >
+        <div className="border-t border-[rgba(212,169,66,0.1)] px-4 py-4 space-y-1">
           {navLinks.map((link) => {
             const Icon = link.icon;
             const isActive = pathname === link.href;
@@ -98,30 +118,29 @@ export const Navbar: React.FC = () => {
                 href={link.href}
                 onClick={() => setIsOpen(false)}
                 className={cn(
-                  'flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-colors',
+                  "flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all font-body",
                   isActive
-                    ? 'bg-[#111E16] text-[#00F5A0] border border-emerald-500/30'
-                    : 'text-slate-300 hover:bg-[#111E16]'
+                    ? "text-[#D4A942] bg-[rgba(212,169,66,0.08)] border border-[rgba(212,169,66,0.2)]"
+                    : "text-[#7A9180] hover:text-[#F5F0E8] hover:bg-[rgba(255,255,255,0.04)]"
                 )}
               >
-                <Icon size={18} />
-                <span>{link.name}</span>
+                <Icon size={16} />
+                {link.name}
               </Link>
             );
           })}
-
           <div className="pt-2">
             <Link
               href="/spots"
               onClick={() => setIsOpen(false)}
-              className="flex items-center justify-center gap-2 w-full text-sm font-bold bg-[#FF6B4A] hover:bg-[#ff5530] text-[#0B130E] px-4 py-3 rounded-xl shadow-lg shadow-[#FF6B4A]/25 active:scale-98 transition-all"
+              className="flex items-center justify-center gap-2 w-full text-sm font-semibold border border-[rgba(212,169,66,0.35)] text-[#D4A942] hover:bg-[rgba(212,169,66,0.1)] px-4 py-3 rounded-xl transition-all font-body"
             >
-              <Compass size={16} />
-              <span>Browse All 6 Destinations</span>
+              <Compass size={15} />
+              Browse All Destinations
             </Link>
           </div>
         </div>
-      )}
+      </div>
     </header>
   );
 };
