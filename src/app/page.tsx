@@ -293,6 +293,91 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+      {/* ── SEO FAQ & Travel Guide Section ── */}
+      <section
+        id="faq-section"
+        className="relative py-16 sm:py-24 border-t border-[rgba(212,169,66,0.1)]"
+        style={{ background: "var(--bg-base)" }}
+      >
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center max-w-3xl mx-auto mb-12 space-y-3">
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-[rgba(212,169,66,0.3)] text-[#D4A942] text-[11px] sm:text-xs font-semibold uppercase tracking-[0.15em] font-body bg-[rgba(212,169,66,0.06)]">
+              <Sparkles size={11} />
+              Traveler Information Guide
+            </div>
+            <h2 className="font-serif font-bold text-[#F5F0E8] text-2xl sm:text-4xl md:text-5xl">
+              Essential Guide to <span className="text-gold-gradient">Pakur, Jharkhand</span>
+            </h2>
+            <p className="text-xs sm:text-sm text-[#7A9180] font-body">
+              Frequently asked questions about sightseeing, connectivity, and cultural heritage in Pakur district.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5 max-w-5xl mx-auto">
+            <div className="luxury-card rounded-2xl p-6 border border-[rgba(212,169,66,0.15)] space-y-2.5">
+              <h3 className="font-serif font-bold text-base text-[#F5F0E8] flex items-center gap-2">
+                <span className="text-[#D4A942]">Q.</span> What is Pakur famous for?
+              </h3>
+              <p className="text-xs sm:text-sm text-[#7A9180] font-body leading-relaxed">
+                Pakur is renowned for its prehistoric Rajmahal basalt rock formations (&ldquo;Black Stone City&rdquo;), the historic 1856 Martello Tower commemorating the 1855 Santhal Rebellion, untouched cascading waterfalls like Lilatari and Amrapara, natural geothermal hot springs at Sidpur, and rich Santhal tribal folklore.
+              </p>
+            </div>
+
+            <div className="luxury-card rounded-2xl p-6 border border-[rgba(212,169,66,0.15)] space-y-2.5">
+              <h3 className="font-serif font-bold text-base text-[#F5F0E8] flex items-center gap-2">
+                <span className="text-[#D4A942]">Q.</span> What are the top places to visit in Pakur?
+              </h3>
+              <p className="text-xs sm:text-sm text-[#7A9180] font-body leading-relaxed">
+                Key destinations include Singarsi Viewpoint (the highest peak in the district), Lilatari Waterfall, Kanchangarh Ancient Caves, Siddhu Kanhu Park &amp; Martello Tower, Sidpur Natural Sulfur Hot Springs, Nityakalyani Shakti Temple, and the vibrant weekly tribal haats of Hiranpur and Littipara.
+              </p>
+            </div>
+
+            <div className="luxury-card rounded-2xl p-6 border border-[rgba(212,169,66,0.15)] space-y-2.5">
+              <h3 className="font-serif font-bold text-base text-[#F5F0E8] flex items-center gap-2">
+                <span className="text-[#D4A942]">Q.</span> How can tourists reach Pakur?
+              </h3>
+              <p className="text-xs sm:text-sm text-[#7A9180] font-body leading-relaxed">
+                Pakur has a prominent Eastern Railway station (Station Code: PKR) with daily express trains from Kolkata (Howrah &amp; Sealdah), Bhagalpur, Patna, and Ranchi. By road, state highways connect Pakur directly to Dumka (65 km), Sahibganj (75 km), and Deoghar Airport (135 km).
+              </p>
+            </div>
+
+            <div className="luxury-card rounded-2xl p-6 border border-[rgba(212,169,66,0.15)] space-y-2.5">
+              <h3 className="font-serif font-bold text-base text-[#F5F0E8] flex items-center gap-2">
+                <span className="text-[#D4A942]">Q.</span> When is the best time to visit Pakur?
+              </h3>
+              <p className="text-xs sm:text-sm text-[#7A9180] font-body leading-relaxed">
+                The best season is from October to March. Autumn and winter offer pleasant, cool weather perfect for nature treks and outdoor exploration, with post-monsoon waterfalls flowing abundantly. November to January is also the season of traditional Santhal harvest festivities.
+              </p>
+            </div>
+          </div>
+
+          {/* Quick CTA Banner for About & Contact */}
+          <div className="mt-12 max-w-5xl mx-auto luxury-card rounded-3xl p-6 sm:p-10 border border-[rgba(212,169,66,0.25)] flex flex-col sm:flex-row items-center justify-between gap-6">
+            <div className="space-y-1.5 text-center sm:text-left">
+              <h3 className="font-serif font-bold text-lg sm:text-xl text-[#F5F0E8]">
+                Planning an Eco-Expedition to Pakur?
+              </h3>
+              <p className="text-xs sm:text-sm text-[#7A9180] font-body">
+                Learn more about our sustainable tourism mission or connect directly with our regional helpdesk.
+              </p>
+            </div>
+            <div className="flex items-center gap-3 shrink-0">
+              <Link
+                href="/about"
+                className="inline-flex items-center gap-1.5 text-xs font-semibold px-4 py-2.5 rounded-xl border border-[rgba(212,169,66,0.3)] text-[#D4A942] hover:bg-[rgba(212,169,66,0.08)] transition-all font-body"
+              >
+                About Pakur
+              </Link>
+              <Link
+                href="/contact"
+                className="inline-flex items-center gap-1.5 text-xs font-bold px-4 py-2.5 rounded-xl bg-gradient-to-r from-[#D4A942] to-[#E8C56D] text-[#08110B] hover:opacity-95 transition-all shadow-md font-body"
+              >
+                Contact Helpdesk
+              </Link>
+            </div>
+          </div>
+        </div>
+      </section>
     </div>
   );
 }

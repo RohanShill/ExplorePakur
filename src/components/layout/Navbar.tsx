@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Menu, X, Compass, MapPin, BookOpen, ChevronRight } from "lucide-react";
+import { Menu, X, Compass, MapPin, BookOpen, Info, Mail, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export const Navbar: React.FC = () => {
@@ -21,9 +21,11 @@ export const Navbar: React.FC = () => {
   useEffect(() => { setIsOpen(false); }, [pathname]);
 
   const navLinks = [
-    { name: "Destinations", href: "/spots",            icon: Compass  },
-    { name: "District Map", href: "/#map-section",     icon: MapPin   },
-    { name: "Heritage",     href: "/#heritage-section",icon: BookOpen },
+    { name: "Destinations", href: "/spots",             icon: Compass  },
+    { name: "District Map", href: "/#map-section",      icon: MapPin   },
+    { name: "Heritage",     href: "/#heritage-section", icon: BookOpen },
+    { name: "About",        href: "/about",             icon: Info     },
+    { name: "Contact",      href: "/contact",           icon: Mail     },
   ];
 
   return (
@@ -63,14 +65,14 @@ export const Navbar: React.FC = () => {
                   key={link.name}
                   href={link.href}
                   className={cn(
-                    "relative flex items-center gap-2 px-3.5 py-2.5 rounded-lg text-sm font-medium transition-all duration-300 font-body group",
+                    "relative flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs lg:text-sm font-medium transition-all duration-300 font-body group",
                     isActive ? "text-[#D4A942]" : "text-[#7A9180] hover:text-[#F5F0E8]"
                   )}
                 >
                   <Icon size={14} />
                   <span>{link.name}</span>
                   <span className={cn(
-                    "absolute bottom-0 left-4 right-4 h-px bg-gradient-to-r from-transparent via-[#D4A942] to-transparent transition-opacity duration-300",
+                    "absolute bottom-0 left-3 right-3 h-px bg-gradient-to-r from-transparent via-[#D4A942] to-transparent transition-opacity duration-300",
                     isActive ? "opacity-100" : "opacity-0 group-hover:opacity-60"
                   )} />
                 </Link>
@@ -82,7 +84,7 @@ export const Navbar: React.FC = () => {
           <div className="flex items-center gap-2">
             <Link
               href="/spots"
-              className="hidden md:inline-flex items-center gap-2 text-xs font-semibold bg-transparent border border-[rgba(212,169,66,0.4)] text-[#D4A942] hover:bg-[rgba(212,169,66,0.08)] hover:border-[rgba(212,169,66,0.7)] px-4 py-2.5 rounded-xl transition-all duration-300 font-body"
+              className="hidden md:inline-flex items-center gap-2 text-xs font-semibold bg-transparent border border-[rgba(212,169,66,0.4)] text-[#D4A942] hover:bg-[rgba(212,169,66,0.08)] hover:border-[rgba(212,169,66,0.7)] px-3.5 py-2 rounded-xl transition-all duration-300 font-body"
             >
               <Compass size={13} />
               Explore Now
@@ -105,10 +107,10 @@ export const Navbar: React.FC = () => {
       <div
         className={cn(
           "md:hidden overflow-hidden transition-all duration-300 ease-in-out",
-          isOpen ? "max-h-80 opacity-100" : "max-h-0 opacity-0 pointer-events-none"
+          isOpen ? "max-h-96 opacity-100" : "max-h-0 opacity-0 pointer-events-none"
         )}
       >
-        <div className="border-t border-[rgba(212,169,66,0.1)] px-4 py-4 space-y-1">
+        <div className="border-t border-[rgba(212,169,66,0.1)] px-4 py-3 space-y-1">
           {navLinks.map((link) => {
             const Icon = link.icon;
             const isActive = pathname === link.href;
@@ -118,7 +120,7 @@ export const Navbar: React.FC = () => {
                 href={link.href}
                 onClick={() => setIsOpen(false)}
                 className={cn(
-                  "flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all font-body",
+                  "flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium transition-all font-body",
                   isActive
                     ? "text-[#D4A942] bg-[rgba(212,169,66,0.08)] border border-[rgba(212,169,66,0.2)]"
                     : "text-[#7A9180] hover:text-[#F5F0E8] hover:bg-[rgba(255,255,255,0.04)]"
@@ -133,7 +135,7 @@ export const Navbar: React.FC = () => {
             <Link
               href="/spots"
               onClick={() => setIsOpen(false)}
-              className="flex items-center justify-center gap-2 w-full text-sm font-semibold border border-[rgba(212,169,66,0.35)] text-[#D4A942] hover:bg-[rgba(212,169,66,0.1)] px-4 py-3 rounded-xl transition-all font-body"
+              className="flex items-center justify-center gap-2 w-full text-sm font-semibold border border-[rgba(212,169,66,0.35)] text-[#D4A942] hover:bg-[rgba(212,169,66,0.1)] px-4 py-2.5 rounded-xl transition-all font-body"
             >
               <Compass size={15} />
               Browse All Destinations
