@@ -7,6 +7,7 @@ import Link from "next/link";
 import { getSpotBySlug, getAllSpots, getReviewsForSpot } from "@/lib/dataAccess";
 import CategoryBadge from "@/components/ui/CategoryBadge";
 import DynamicMap from "@/components/map/DynamicMap";
+import InteractivePhotoGallery from "@/components/ui/InteractivePhotoGallery";
 import {
   MapPin, Calendar, Clock, Navigation, CheckCircle,
   Star, ArrowLeft, Sparkles, Train, Ticket,
@@ -274,22 +275,13 @@ export default async function SpotDetailPage({ params }: SpotDetailsProps) {
               </section>
             )}
 
-            {/* Photo Gallery */}
-            {spot.galleryImages && spot.galleryImages.length > 0 && (
-              <section className="space-y-3">
-                <h3 className="font-serif text-base sm:text-lg font-bold text-[#F5F0E8]">Photo Gallery</h3>
-                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-                  {spot.galleryImages.map((img, i) => (
-                    <div key={i} className="relative aspect-[4/3] rounded-xl overflow-hidden border border-[rgba(212,169,66,0.15)] group">
-                      <img
-                        src={img}
-                        alt={`${spot.title} photo ${i + 1}`}
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                      />
-                    </div>
-                  ))}
-                </div>
-              </section>
+            {/* Interactive Photo Gallery with Pop-Zoom & Slide Lightbox */}
+            {((spot.galleryImages && spot.galleryImages.length > 0) || spot.coverImage) && (
+              <InteractivePhotoGallery
+                spotTitle={spot.title}
+                coverImage={spot.coverImage}
+                galleryImages={spot.galleryImages || []}
+              />
             )}
 
             {/* Interactive Map */}

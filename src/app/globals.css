@@ -208,3 +208,32 @@ body {
   font-size: clamp(1.6rem, 5vw, 3rem);
   line-height: 1.2;
 }
+
+/* Pop-zoom and modal animations for Photo Gallery Lightbox */
+@keyframes popZoom {
+  0% {
+    opacity: 0;
+    transform: scale(0.92);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.animate-pop-zoom {
+  animation: popZoom 0.28s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes fadeInModal {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+.animate-fade-in {
+  animation: fadeInModal 0.22s ease-out forwards;
+}
