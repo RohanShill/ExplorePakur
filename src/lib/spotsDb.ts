@@ -88,7 +88,6 @@ function mapSupabaseRowToSpot(row: any): TouristSpot {
 }
 
 export async function getAllSpotsAsync(): Promise<TouristSpot[]> {
-  const localSpots = getAllSpotsFromDb();
   try {
     const supabase = getSupabaseAdmin();
     if (supabase) {
@@ -99,45 +98,14 @@ export async function getAllSpotsAsync(): Promise<TouristSpot[]> {
 
       if (!error && Array.isArray(data) && data.length > 0) {
         const mapped = data.map(mapSupabaseRowToSpot);
-        // Merge with local spots: preserve any local spot not yet in Supabase
-        const merged = [...mapped];
-        const missingInSupa = localSpots.filter(
-          (ls) => !mapped.some((ms) => ms.slug === ls.slug || ms.id === ls.id)
-        );
-        if (missingInSupa.length > 0) {
-          merged.push(...missingInSupa);
-          Promise.all(
-            missingInSupa.map((s) =>
-              supabase.from('tourist_spots').insert({
-                id: s.id,
-                title: s.title,
-                slug: s.slug,
-                category: s.category,
-                description: s.description,
-                long_description: s.longDescription || s.description,
-                latitude: s.latitude,
-                longitude: s.longitude,
-                cover_image: s.coverImage,
-                gallery_images: s.galleryImages || [],
-                best_time_to_visit: s.bestTimeToVisit,
-                distance_from_pakur_station: s.distanceFromPakurStation,
-                entry_fee: s.entryFee,
-                timing: s.timing,
-                nearest_railway: s.nearestRailway,
-                highlights: s.highlights,
-                cultural_note: s.culturalNote,
-              })
-            )
-          ).catch((e) => console.warn('[Supabase Auto-Sync Error]', e));
-        }
-        saveSpotsToDb(merged);
-        return merged;
+        saveSpotsToDb(mapped);
+        return mapped;
       }
     }
   } catch (err) {
     console.warn('[Supabase Sync] Fetching fallback from local DB:', err);
   }
-  return localSpots;
+  return getAllSpotsFromDb();
 }
 
 export async function getSpotBySlugAsync(slug: string): Promise<TouristSpot | null> {
@@ -323,16 +291,27 @@ export async function updateSpotInDb(id: string, data: Partial<TouristSpot>): Pr
 }
 
 export async function deleteSpotInDb(id: string): Promise<TouristSpot | null> {
+  let deleted: TouristSpot | null = null;
   const spots = getAllSpotsFromDb();
   const index = spots.findIndex((s) => s.id === id);
-  if (index === -1) return null;
-
-  const deleted = spots.splice(index, 1)[0];
-  saveSpotsToDb(spots);
+  if (index !== -1) {
+    deleted = spots.splice(index, 1)[0];
+    saveSpotsToDb(spots);
+  }
 
   try {
     const supabase = getSupabaseAdmin();
     if (supabase) {
+      if (!deleted) {
+        const { data: supaRow } = await supabase
+          .from('tourist_spots')
+          .select('*')
+          .eq('id', id)
+          .maybeSingle();
+        if (supaRow) {
+          deleted = mapSupabaseRowToSpot(supaRow);
+        }
+      }
       const { error } = await supabase.from('tourist_spots').delete().eq('id', id);
       if (error) {
         console.error('[Supabase Delete Error]', error.message);

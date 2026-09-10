@@ -1,32 +1,5 @@
 [
   {
-    "id": "029bf0ea-b956-4cc4-8a21-7e506e1efc8a",
-    "title": "Amrapara Forest Reserve & Stream Waterfall",
-    "slug": "amrapara-forest-waterfall",
-    "category": "Waterfall",
-    "description": "Pristine seasonal jungle streams and mini-cascades surrounded by ancient timber trees in the Amrapara plateau.",
-    "longDescription": "Tucked deep inside the south-western forest range of Pakur, Amrapara features sparkling hill streams that tumble over basalt boulders to form secluded forest cascades. A tranquil sanctuary away from commercial crowds, ideal for nature photography and meditation.",
-    "latitude": 24.512,
-    "longitude": 87.525,
-    "coverImage": "https://images.unsplash.com/photo-1432405972618-c60b0225b8f9?auto=format&fit=crop&w=1200&q=80",
-    "galleryImages": [
-      "https://images.unsplash.com/photo-1432405972618-c60b0225b8f9?auto=format&fit=crop&w=800&q=80"
-    ],
-    "bestTimeToVisit": "Aug to Jan",
-    "distanceFromPakurStation": "42 km from Pakur HQ",
-    "entryFee": "Free Entry",
-    "timing": "06:30 AM � 04:30 PM",
-    "nearestRailway": "Pakur (PKR)",
-    "highlights": [
-      "Hidden Forest Waterfall",
-      "Ancient Timber Woods",
-      "Cool Stream Pools",
-      "Pure Nature Trek"
-    ],
-    "culturalNote": "Guarded by regional Van Suraksha Samitis who maintain ecological harmony.",
-    "createdAt": "2026-09-06T10:11:58.531701+00:00"
-  },
-  {
     "id": "176091fa-7894-4fdf-8e7e-ef7d3c5abc5d",
     "title": "Litipara Green Valley & Forest Reserve",
     "slug": "litipara-eco-valley",
@@ -51,7 +24,198 @@
       "Birdwatching Haven"
     ],
     "culturalNote": "Traditional Santhal mural art (Sohrai and Khovar patterns) adorns village walls throughout the valley.",
-    "createdAt": "2026-09-06T10:11:58.471009+00:00"
+    "createdAt": "2026-09-10T17:08:47.129657+00:00"
+  },
+  {
+    "id": "d50e5d6d-f809-44ac-8098-56be09757f3b",
+    "title": "Hiranpur Pargana Nadi (Bansloi River Ghat)",
+    "slug": "hiranpur-pargana-nadi",
+    "category": "Waterfall",
+    "description": "Scenic Bansloi river picnic banks and natural bathing ghat in Hiranpur, beloved for peaceful waters and winter family gatherings.",
+    "longDescription": "The Bansloi River flows gracefully past the Hiranpur plains, forming picturesque sandy banks, gentle rocky shallows, and lush riverside vegetation. Known locally as Pargana Nadi, this tranquil riverfront is Pakur's favorite winter picnic destination, where families gather beneath leafy mango and sal groves for outdoor cooking, fishing, and relaxed riverside afternoons.",
+    "latitude": 24.588,
+    "longitude": 87.728,
+    "coverImage": "https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?auto=format&fit=crop&w=1200&q=80",
+    "galleryImages": [
+      "https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?auto=format&fit=crop&w=800&q=80"
+    ],
+    "bestTimeToVisit": "Oct to Mar",
+    "distanceFromPakurStation": "16 km from Pakur Railway Station",
+    "entryFee": "Free Public Access",
+    "timing": "06:00 AM � 06:00 PM",
+    "nearestRailway": "Pakur (PKR)",
+    "highlights": [
+      "Scenic Riverbed Picnic",
+      "Gentle Rocky Shallows",
+      "Bansloi Riverfront Walk",
+      "Family Day Out"
+    ],
+    "culturalNote": "Riverbanks serve as holy immersion sites during Chhath Puja and regional Santhal harvest celebrations.",
+    "createdAt": "2026-09-10T17:08:42.908959+00:00"
+  },
+  {
+    "id": "030deea3-aacd-439d-a320-0feea2a3b3ee",
+    "title": "Singarsi Viewpoint",
+    "slug": "singarsi-viewpoint",
+    "category": "Cave & Hill",
+    "description": "Perched atop the Rajmahal Hill range, Singarsi offers breathtaking panoramic sunrises over lush Sal forests and indigenous Santhal settlements.",
+    "longDescription": "Singarsi Viewpoint sits within the ancient Rajmahal volcanic trap formations. Rising majestically above the plains of Pakur, it provides travelers with an unobstructed 360-degree vista of mist-laden valleys, rolling sal canopies, and traditional tribal hamlets. A hotspot for avid birdwatchers and landscape photographers, Singarsi comes alive in the winter mornings when clouds nestle beneath the hilltop peaks.",
+    "latitude": 24.582,
+    "longitude": 87.583,
+    "coverImage": "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1200&q=80",
+    "galleryImages": [
+      "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?auto=format&fit=crop&w=800&q=80"
+    ],
+    "bestTimeToVisit": "Oct to Mar",
+    "distanceFromPakurStation": "32 km from Pakur Railway Station",
+    "entryFee": "Free Public Entry",
+    "timing": "05:30 AM � 05:30 PM",
+    "nearestRailway": "Pakur (PKR) / Barharwa (BHW)",
+    "highlights": [
+      "Sunrise Panoramic View",
+      "Rajmahal Hill Formations",
+      "Tribal Trekking Routes",
+      "Sal Forest Canopy"
+    ],
+    "culturalNote": "Part of the ancestral lands inhabited by Sauria Paharia and Santhal communities with preserved folklore of hill spirits.",
+    "createdAt": "2026-09-10T17:08:42.908177+00:00"
+  },
+  {
+    "id": "28198f0d-0610-4c2a-93f3-edbde41ff1a8",
+    "title": "Sidpur (Taatloi) Hot Spring",
+    "slug": "sidpur-hot-spring",
+    "category": "Thermal Spring",
+    "description": "A naturally occurring geothermal sulphur spring bubbling amidst rural farmsteads, renowned for therapeutic mineral waters.",
+    "longDescription": "Located near the border of Pakur and Dumka districts along the riverbed, Sidpur (Taatloi) Hot Spring emits steaming, mineral-rich thermal water year-round. Pilgrims and visitors travel from across the Santhal Pargana division to bathe in the natural pools believed to soothe joint pain and skin ailments.",
+    "latitude": 24.582,
+    "longitude": 87.585,
+    "coverImage": "https://images.unsplash.com/photo-1544161515-4ab6ce6db874?auto=format&fit=crop&w=1200&q=80",
+    "galleryImages": [
+      "https://images.unsplash.com/photo-1544161515-4ab6ce6db874?auto=format&fit=crop&w=800&q=80"
+    ],
+    "bestTimeToVisit": "Nov to Feb",
+    "distanceFromPakurStation": "35 km from Pakur Station",
+    "entryFee": "Free Public Access",
+    "timing": "Open 24 Hours",
+    "nearestRailway": "Pakur (PKR)",
+    "highlights": [
+      "Geothermal Mineral Water",
+      "Medicinal Sulphur Spring",
+      "Rural River Basin",
+      "Winter Bathing Spot"
+    ],
+    "culturalNote": "A traditional pilgrimage stop during Makar Sankranti where villagers prepare khichdi on the riverbanks.",
+    "createdAt": "2026-09-10T17:08:42.906276+00:00"
+  },
+  {
+    "id": "54f0ad26-641c-41ae-bb6e-8c304eb116f5",
+    "title": "Hiranpur Shiv Gufa & Forest Ashram",
+    "slug": "hiranpur-shiv-gufa-ashram",
+    "category": "Cave & Hill",
+    "description": "A serene forest rock cave sanctum near Hiranpur with ancient Shiva lingam and natural stone springs.",
+    "longDescription": "Nestled deep in the sal forests of Hiranpur, this natural basalt cave has been revered for generations. The cool subterranean chambers feature ancient rock-carved deities, secluded meditation points, and freshwater springs.",
+    "latitude": 24.615,
+    "longitude": 87.72,
+    "coverImage": "https://images.unsplash.com/photo-1544644181-1484b3fdfc62?auto=format&fit=crop&w=1200&q=80",
+    "galleryImages": [
+      "https://images.unsplash.com/photo-1544644181-1484b3fdfc62?auto=format&fit=crop&w=800&q=80"
+    ],
+    "bestTimeToVisit": "Oct to Mar",
+    "distanceFromPakurStation": "21 km from Pakur HQ",
+    "entryFee": "Free Public Access",
+    "timing": "06:00 AM - 06:00 PM",
+    "nearestRailway": "Pakur (PKR)",
+    "highlights": [
+      "Ancient Cave Sanctum",
+      "Forest Ashram",
+      "Natural Basalt Formations"
+    ],
+    "culturalNote": "Annual gathering during Maha Shivratri draws thousands of pilgrims from across Santhal Pargana.",
+    "createdAt": "2026-09-10T17:08:42.90003+00:00"
+  },
+  {
+    "id": "43d5a2de-7421-48dd-81cf-5a800495d2ad",
+    "title": "Nityakali Mandir",
+    "slug": "nityakali-mandir",
+    "category": "Park & Heritage",
+    "description": "An ancient Kali temple with historic terracotta heritage and spiritual tranquility, revered by generations of devotees.",
+    "longDescription": "Nityakali Mandir is one of Pakur town's oldest spiritual sanctuaries. Revered for its deep-rooted tantric and Shakta heritage, the temple features traditional Bengal-influenced terracotta craftsmanship and peaceful courtyard shrines under ancient banyan trees. Devotees visit during Kali Puja and Amavasya nights for sacred blessings.",
+    "latitude": 24.6385,
+    "longitude": 87.853,
+    "coverImage": "https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?auto=format&fit=crop&w=1200&q=80",
+    "galleryImages": [
+      "https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?auto=format&fit=crop&w=800&q=80"
+    ],
+    "bestTimeToVisit": "Round the year",
+    "distanceFromPakurStation": "2 km from Pakur Station",
+    "entryFee": "Free Entry",
+    "timing": "05:00 AM � 09:00 PM",
+    "nearestRailway": "Pakur (PKR)",
+    "highlights": [
+      "Terracotta Temple Art",
+      "Ancient Kali Sanctum",
+      "Diwali Kali Puja Celebrations",
+      "Quiet Courtyard"
+    ],
+    "culturalNote": "Believed to have been established by medieval zamindars who patronized classical Santhal Pargana temple art.",
+    "createdAt": "2026-09-10T17:08:33.756079+00:00"
+  },
+  {
+    "id": "3bee2039-5ae2-4da3-8e77-4d7a16cf4211",
+    "title": "Dharni Pahar & Caves",
+    "slug": "dharni-pahar",
+    "category": "Cave & Hill",
+    "description": "An iconic granite hill complex with natural rock shelters, sacred cave shrines, and commanding views of the rural Pakur plateau.",
+    "longDescription": "Rising abruptly from the undulating agricultural plains, Dharni Pahar is a revered geological outcrop with wind-sculpted granite boulders. Pilgrims and nature enthusiasts ascend its ancient stone steps to visit the cave sanctum and take in sunsets over the Bansloi river valley.",
+    "latitude": 24.551,
+    "longitude": 87.721,
+    "coverImage": "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=1200&q=80",
+    "galleryImages": [
+      "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=80"
+    ],
+    "bestTimeToVisit": "Oct to Mar",
+    "distanceFromPakurStation": "18 km from Pakur HQ",
+    "entryFee": "Free Public Entry",
+    "timing": "05:00 AM � 06:30 PM",
+    "nearestRailway": "Pakur (PKR)",
+    "highlights": [
+      "Rock-cut Cave Shrine",
+      "Sunset Viewpoint",
+      "Granite Bouldering",
+      "Annual Hill Fair"
+    ],
+    "culturalNote": "Focal point of regional gatherings during Shivratri where devotees climb the hill for prayers.",
+    "createdAt": "2026-09-10T17:07:43.125725+00:00"
+  },
+  {
+    "id": "029bf0ea-b956-4cc4-8a21-7e506e1efc8a",
+    "title": "Amrapara Forest Reserve & Stream Waterfall",
+    "slug": "amrapara-forest-waterfall",
+    "category": "Waterfall",
+    "description": "Pristine seasonal jungle streams and mini-cascades surrounded by ancient timber trees in the Amrapara plateau.",
+    "longDescription": "Tucked deep inside the south-western forest range of Pakur, Amrapara features sparkling hill streams that tumble over basalt boulders to form secluded forest cascades. A tranquil sanctuary away from commercial crowds, ideal for nature photography and meditation.",
+    "latitude": 24.512,
+    "longitude": 87.525,
+    "coverImage": "https://images.unsplash.com/photo-1432405972618-c60b0225b8f9?auto=format&fit=crop&w=1200&q=80",
+    "galleryImages": [
+      "https://images.unsplash.com/photo-1432405972618-c60b0225b8f9?auto=format&fit=crop&w=800&q=80"
+    ],
+    "bestTimeToVisit": "Aug to Jan",
+    "distanceFromPakurStation": "42 km from Pakur HQ",
+    "entryFee": "Free Entry",
+    "timing": "06:30 AM � 04:30 PM",
+    "nearestRailway": "Pakur (PKR)",
+    "highlights": [
+      "Hidden Forest Waterfall",
+      "Ancient Timber Woods",
+      "Cool Stream Pools",
+      "Pure Nature Trek"
+    ],
+    "culturalNote": "Guarded by regional Van Suraksha Samitis who maintain ecological harmony.",
+    "createdAt": "2026-09-10T17:07:40.085636+00:00"
   },
   {
     "id": "fa40ef46-8824-4ded-a900-99c0277fd27b",
@@ -137,33 +301,6 @@
     "createdAt": "2026-09-06T10:11:58.286497+00:00"
   },
   {
-    "id": "43d5a2de-7421-48dd-81cf-5a800495d2ad",
-    "title": "Nityakali Mandir",
-    "slug": "nityakali-mandir",
-    "category": "Park & Heritage",
-    "description": "An ancient Kali temple with historic terracotta heritage and spiritual tranquility, revered by generations of devotees.",
-    "longDescription": "Nityakali Mandir is one of Pakur town's oldest spiritual sanctuaries. Revered for its deep-rooted tantric and Shakta heritage, the temple features traditional Bengal-influenced terracotta craftsmanship and peaceful courtyard shrines under ancient banyan trees. Devotees visit during Kali Puja and Amavasya nights for sacred blessings.",
-    "latitude": 24.6385,
-    "longitude": 87.853,
-    "coverImage": "https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?auto=format&fit=crop&w=1200&q=80",
-    "galleryImages": [
-      "https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?auto=format&fit=crop&w=800&q=80"
-    ],
-    "bestTimeToVisit": "Round the year",
-    "distanceFromPakurStation": "2 km from Pakur Station",
-    "entryFee": "Free Entry",
-    "timing": "05:00 AM � 09:00 PM",
-    "nearestRailway": "Pakur (PKR)",
-    "highlights": [
-      "Terracotta Temple Art",
-      "Ancient Kali Sanctum",
-      "Diwali Kali Puja Celebrations",
-      "Quiet Courtyard"
-    ],
-    "culturalNote": "Believed to have been established by medieval zamindars who patronized classical Santhal Pargana temple art.",
-    "createdAt": "2026-09-06T10:11:58.22216+00:00"
-  },
-  {
     "id": "9de3d992-76a1-4b6e-8c33-99b1cba4b771",
     "title": "Martello Tower",
     "slug": "martello-tower",
@@ -219,60 +356,6 @@
     "createdAt": "2026-09-06T10:11:58.092304+00:00"
   },
   {
-    "id": "d50e5d6d-f809-44ac-8098-56be09757f3b",
-    "title": "Hiranpur Pargana Nadi (Bansloi River Ghat)",
-    "slug": "hiranpur-pargana-nadi",
-    "category": "Waterfall",
-    "description": "Scenic Bansloi river picnic banks and natural bathing ghat in Hiranpur, beloved for peaceful waters and winter family gatherings.",
-    "longDescription": "The Bansloi River flows gracefully past the Hiranpur plains, forming picturesque sandy banks, gentle rocky shallows, and lush riverside vegetation. Known locally as Pargana Nadi, this tranquil riverfront is Pakur's favorite winter picnic destination, where families gather beneath leafy mango and sal groves for outdoor cooking, fishing, and relaxed riverside afternoons.",
-    "latitude": 24.588,
-    "longitude": 87.728,
-    "coverImage": "https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?auto=format&fit=crop&w=1200&q=80",
-    "galleryImages": [
-      "https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?auto=format&fit=crop&w=800&q=80"
-    ],
-    "bestTimeToVisit": "Oct to Mar",
-    "distanceFromPakurStation": "16 km from Pakur Railway Station",
-    "entryFee": "Free Public Access",
-    "timing": "06:00 AM � 06:00 PM",
-    "nearestRailway": "Pakur (PKR)",
-    "highlights": [
-      "Scenic Riverbed Picnic",
-      "Gentle Rocky Shallows",
-      "Bansloi Riverfront Walk",
-      "Family Day Out"
-    ],
-    "culturalNote": "Riverbanks serve as holy immersion sites during Chhath Puja and regional Santhal harvest celebrations.",
-    "createdAt": "2026-09-06T10:11:58.026433+00:00"
-  },
-  {
-    "id": "28198f0d-0610-4c2a-93f3-edbde41ff1a8",
-    "title": "Sidpur (Taatloi) Hot Spring",
-    "slug": "sidpur-hot-spring",
-    "category": "Thermal Spring",
-    "description": "A naturally occurring geothermal sulphur spring bubbling amidst rural farmsteads, renowned for therapeutic mineral waters.",
-    "longDescription": "Located near the border of Pakur and Dumka districts along the riverbed, Sidpur (Taatloi) Hot Spring emits steaming, mineral-rich thermal water year-round. Pilgrims and visitors travel from across the Santhal Pargana division to bathe in the natural pools believed to soothe joint pain and skin ailments.",
-    "latitude": 24.582,
-    "longitude": 87.585,
-    "coverImage": "https://images.unsplash.com/photo-1544161515-4ab6ce6db874?auto=format&fit=crop&w=1200&q=80",
-    "galleryImages": [
-      "https://images.unsplash.com/photo-1544161515-4ab6ce6db874?auto=format&fit=crop&w=800&q=80"
-    ],
-    "bestTimeToVisit": "Nov to Feb",
-    "distanceFromPakurStation": "35 km from Pakur Station",
-    "entryFee": "Free Public Access",
-    "timing": "Open 24 Hours",
-    "nearestRailway": "Pakur (PKR)",
-    "highlights": [
-      "Geothermal Mineral Water",
-      "Medicinal Sulphur Spring",
-      "Rural River Basin",
-      "Winter Bathing Spot"
-    ],
-    "culturalNote": "A traditional pilgrimage stop during Makar Sankranti where villagers prepare khichdi on the riverbanks.",
-    "createdAt": "2026-09-06T10:11:57.957443+00:00"
-  },
-  {
     "id": "e33ae59a-f510-4d2a-a36f-e34a127ccd02",
     "title": "Sidho-Kanho Murmu Park",
     "slug": "siddhu-kanhu-park",
@@ -298,34 +381,6 @@
     ],
     "culturalNote": "Commemorative ceremonies and cultural festivals are held annually on Hul Diwas (June 30).",
     "createdAt": "2026-09-06T10:11:57.887992+00:00"
-  },
-  {
-    "id": "3bee2039-5ae2-4da3-8e77-4d7a16cf4211",
-    "title": "Dharni Pahar & Caves",
-    "slug": "dharni-pahar",
-    "category": "Cave & Hill",
-    "description": "An iconic granite hill complex with natural rock shelters, sacred cave shrines, and commanding views of the rural Pakur plateau.",
-    "longDescription": "Rising abruptly from the undulating agricultural plains, Dharni Pahar is a revered geological outcrop with wind-sculpted granite boulders. Pilgrims and nature enthusiasts ascend its ancient stone steps to visit the cave sanctum and take in sunsets over the Bansloi river valley.",
-    "latitude": 24.551,
-    "longitude": 87.721,
-    "coverImage": "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=1200&q=80",
-    "galleryImages": [
-      "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=800&q=80",
-      "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=80"
-    ],
-    "bestTimeToVisit": "Oct to Mar",
-    "distanceFromPakurStation": "18 km from Pakur HQ",
-    "entryFee": "Free Public Entry",
-    "timing": "05:00 AM � 06:30 PM",
-    "nearestRailway": "Pakur (PKR)",
-    "highlights": [
-      "Rock-cut Cave Shrine",
-      "Sunset Viewpoint",
-      "Granite Bouldering",
-      "Annual Hill Fair"
-    ],
-    "culturalNote": "Focal point of regional gatherings during Shivratri where devotees climb the hill for prayers.",
-    "createdAt": "2026-09-06T10:11:57.834498+00:00"
   },
   {
     "id": "cec91c5e-50bb-4bb2-8b41-900e2f762eaf",
@@ -381,60 +436,5 @@
     ],
     "culturalNote": "Locally guarded sanctuary revered during Makar Sankranti and tribal festive ceremonies.",
     "createdAt": "2026-09-06T10:11:57.701537+00:00"
-  },
-  {
-    "id": "030deea3-aacd-439d-a320-0feea2a3b3ee",
-    "title": "Singarsi Viewpoint",
-    "slug": "singarsi-viewpoint",
-    "category": "Cave & Hill",
-    "description": "Perched atop the Rajmahal Hill range, Singarsi offers breathtaking panoramic sunrises over lush Sal forests and indigenous Santhal settlements.",
-    "longDescription": "Singarsi Viewpoint sits within the ancient Rajmahal volcanic trap formations. Rising majestically above the plains of Pakur, it provides travelers with an unobstructed 360-degree vista of mist-laden valleys, rolling sal canopies, and traditional tribal hamlets. A hotspot for avid birdwatchers and landscape photographers, Singarsi comes alive in the winter mornings when clouds nestle beneath the hilltop peaks.",
-    "latitude": 24.582,
-    "longitude": 87.583,
-    "coverImage": "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1200&q=80",
-    "galleryImages": [
-      "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=80",
-      "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=800&q=80",
-      "https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?auto=format&fit=crop&w=800&q=80"
-    ],
-    "bestTimeToVisit": "Oct to Mar",
-    "distanceFromPakurStation": "32 km from Pakur Railway Station",
-    "entryFee": "Free Public Entry",
-    "timing": "05:30 AM � 05:30 PM",
-    "nearestRailway": "Pakur (PKR) / Barharwa (BHW)",
-    "highlights": [
-      "Sunrise Panoramic View",
-      "Rajmahal Hill Formations",
-      "Tribal Trekking Routes",
-      "Sal Forest Canopy"
-    ],
-    "culturalNote": "Part of the ancestral lands inhabited by Sauria Paharia and Santhal communities with preserved folklore of hill spirits.",
-    "createdAt": "2026-09-06T10:11:57.610654+00:00"
-  },
-  {
-    "id": "54f0ad26-641c-41ae-bb6e-8c304eb116f5",
-    "title": "Hiranpur Shiv Gufa & Forest Ashram",
-    "slug": "hiranpur-shiv-gufa-ashram",
-    "category": "Cave & Hill",
-    "description": "A serene forest rock cave sanctum near Hiranpur with ancient Shiva lingam and natural stone springs.",
-    "longDescription": "Nestled deep in the sal forests of Hiranpur, this natural basalt cave has been revered for generations. The cool subterranean chambers feature ancient rock-carved deities, secluded meditation points, and freshwater springs.",
-    "latitude": 24.615,
-    "longitude": 87.72,
-    "coverImage": "https://images.unsplash.com/photo-1544644181-1484b3fdfc62?auto=format&fit=crop&w=1200&q=80",
-    "galleryImages": [
-      "https://images.unsplash.com/photo-1544644181-1484b3fdfc62?auto=format&fit=crop&w=800&q=80"
-    ],
-    "bestTimeToVisit": "Oct to Mar",
-    "distanceFromPakurStation": "21 km from Pakur HQ",
-    "entryFee": "Free Public Access",
-    "timing": "06:00 AM - 06:00 PM",
-    "nearestRailway": "Pakur (PKR)",
-    "highlights": [
-      "Ancient Cave Sanctum",
-      "Forest Ashram",
-      "Natural Basalt Formations"
-    ],
-    "culturalNote": "Annual gathering during Maha Shivratri draws thousands of pilgrims from across Santhal Pargana.",
-    "createdAt": "2026-09-06T10:11:57.17088+00:00"
   }
 ]
