@@ -18,7 +18,7 @@ export const metadata: Metadata = {
     template: "%s | Explore Pakur — Jharkhand Eco-Tourism",
   },
   description:
-    "Discover Pakur, Jharkhand — Complete travel guide to Pakur tourist spots, historic 1855 Martello Tower, Lilatari Waterfall, Singarsi Viewpoint, Kanchangarh Caves, Nityakalyani Mandir, Sidpur Hot Springs, Santhal culture, hotels, and train routes.",
+    "Discover Pakur, Jharkhand — Complete travel guide to Pakur tourist spots, historic 1855 Martello Tower, Lilatari Waterfall, Singhashi Hilltop Peak, Kanchangarh Caves, Nityakalyani Mandir, Sidpur Hot Springs, Santhal culture, hotels, and train routes.",
   keywords: [
     "Pakur",
     "Pakur Jharkhand",
@@ -34,7 +34,7 @@ export const metadata: Metadata = {
     "Jharkhand eco tourism",
     "Pakur waterfall",
     "Lilatari Waterfall Pakur",
-    "Singarsi Viewpoint Pakur",
+    "Singhashi Hilltop Peak Pakur",
     "Kanchangarh Cave Pakur",
     "Sidpur Hot Spring Pakur",
     "Nityakalyani Mandir Pakur",
@@ -76,7 +76,7 @@ export const metadata: Metadata = {
         url: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1200&q=80",
         width: 1200,
         height: 630,
-        alt: "Singarsi Viewpoint and pristine hills of Pakur, Jharkhand",
+        alt: "Singhashi Hilltop Peak and pristine hills of Pakur, Jharkhand",
       },
     ],
   },
@@ -148,7 +148,7 @@ export default function RootLayout({
         "@id": `${siteUrl}/#pakur-destination`,
         "name": "Pakur, Jharkhand",
         "alternateName": ["Pakaur", "Pakur District", "The Black Stone City"],
-        "description": "Pakur is an eco-tourism destination in the Santhal Pargana division of Jharkhand, India, renowned for the 1855 Martello Tower, Lilatari Waterfall, Singarsi Viewpoint, Sidpur Hot Springs, and indigenous Santhal culture.",
+        "description": "Pakur is an eco-tourism destination in the Santhal Pargana division of Jharkhand, India, renowned for the 1855 Martello Tower, Lilatari Waterfall, Singhashi Hilltop Peak, Sidpur Hot Springs, and indigenous Santhal culture.",
         "url": siteUrl,
         "touristType": [
           "Eco-Tourism",
@@ -182,7 +182,7 @@ export default function RootLayout({
             "name": "What is Pakur famous for?",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "Pakur is famous for its rich tribal Santhal heritage, the historic 1855 Martello Tower commemorating the Santhal Rebellion (Hool), premier black basalt stone quarries, pristine seasonal waterfalls such as Lilatari and Amrapara, panoramic Singarsi Viewpoint, natural geothermal sulfur hot springs at Sidpur, and the ancient Shakti Peeth of Nityakalyani Mandir."
+              "text": "Pakur is famous for its rich tribal Santhal heritage, the historic 1855 Martello Tower commemorating the Santhal Rebellion (Hool), premier black basalt stone quarries, pristine seasonal waterfalls such as Lilatari and Amrapara, panoramic Singhashi Hilltop Peak, natural geothermal sulfur hot springs at Sidpur, and the ancient Shakti Peeth of Nityakalyani Mandir."
             }
           },
           {
@@ -190,7 +190,7 @@ export default function RootLayout({
             "name": "What are the best places to visit in Pakur, Jharkhand?",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "The top tourist attractions in Pakur include: 1) Martello Tower & Siddhu Kanhu Park, 2) Singarsi Hill Viewpoint (highest point in the district), 3) Lilatari Waterfall, 4) Kanchangarh Ancient Caves, 5) Sidpur Natural Hot Springs, 6) Nityakalyani Kali Temple, 7) Amrapara Forest Cascades, and 8) Hiranpur Weekly Tribal Craft Haat."
+              "text": "The top tourist attractions in Pakur include: 1) Martello Tower & Siddhu Kanhu Park, 2) Singhashi Hilltop Peak (highest point in the district), 3) Lilatari Waterfall, 4) Kanchangarh Ancient Caves, 5) Sidpur Natural Hot Springs, 6) Nityakalyani Kali Temple, 7) Amrapara Forest Cascades, and 8) Hiranpur Weekly Tribal Craft Haat."
             }
           },
           {

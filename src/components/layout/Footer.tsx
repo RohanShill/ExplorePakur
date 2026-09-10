@@ -4,12 +4,12 @@ import { MapPin, Globe, Heart, Github, Mail, Compass, Info } from "lucide-react"
 
 export const Footer: React.FC = () => {
   const destinations = [
-    { name: "Singarsi Viewpoint",    slug: "singarsi-viewpoint" },
-    { name: "Lilatari Waterfall",    slug: "lilatari-waterfall" },
-    { name: "Kanchangarh Cave",      slug: "kanchangarh-cave" },
-    { name: "Dharni Pahar & Caves",  slug: "dharni-pahar" },
-    { name: "Martello Tower & Park", slug: "siddhu-kanhu-park" },
-    { name: "Sidpur Hot Spring",     slug: "sidpur-hot-spring" },
+    { name: "Singhashi Hilltop Peak", slug: "singhashi-hilltop-peak" },
+    { name: "Lilatari Waterfall", slug: "lilatari-waterfall" },
+    { name: "Kanchangarh Cave", slug: "kanchangarh-cave" },
+    { name: "Martello Tower", slug: "martello-tower" },
+    { name: "Sidho-Kanho Murmu Park", slug: "siddhu-kanhu-park" },
+    { name: "Maheshpur Rajbari", slug: "maheshpur-rajbari" },
   ];
 
   const quickLinks = [
@@ -84,7 +84,7 @@ export const Footer: React.FC = () => {
                   className="text-xs font-semibold text-[#D4A942] hover:underline font-body flex items-center gap-1.5"
                 >
                   <Compass size={13} />
-                  <span>View all 16+ tourist spots →</span>
+                  <span>View all tourist spots →</span>
                 </Link>
               </li>
             </ul>

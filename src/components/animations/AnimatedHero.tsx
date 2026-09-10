@@ -74,7 +74,7 @@ const AnimatedHero: React.FC = () => {
           <Mountain size={20} />
         </div>
         <div>
-          <span className="text-xs font-semibold text-[#F5F0E8] block font-body">Singarsi Peak</span>
+          <span className="text-xs font-semibold text-[#F5F0E8] block font-body">Singhashi Peak</span>
           <span className="text-[11px] text-[#7A9180] font-body">Rajmahal Hills Vista</span>
         </div>
       </div>

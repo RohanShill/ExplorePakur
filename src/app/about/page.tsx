@@ -199,7 +199,7 @@ export default function AboutPage() {
                   Bounded by Sahibganj to the north, Dumka to the west, and the historical Murshidabad and Birbhum districts of West Bengal to the east and south, Pakur represents an extraordinary confluence of Jharkhand&apos;s tribal plateau biodiversity and Bengal&apos;s agrarian serenity.
                 </p>
                 <p>
-                  Hidden within this undulating terrain are seasonal cascades like Lilatari and Amrapara waterfalls, mystic caves of Kanchangarh, natural sulfur hot springs at Sidpur, and the panoramic 360-degree hill viewpoint of Singarsi.
+                  Hidden within this undulating terrain are seasonal cascades like Lilatari and Amrapara waterfalls, mystic caves of Kanchangarh, natural sulfur hot springs at Sidpur, and the panoramic 360-degree hill viewpoint of Singhashi.
                 </p>
               </div>
             </div>
