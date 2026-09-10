@@ -1,8 +1,8 @@
-import { TouristSpot, VisitorReview } from "@/types";
+﻿import { TouristSpot, VisitorReview } from "@/types";
 
 export const TOURIST_SPOTS: TouristSpot[] = [
   {
-    id: "a1b2c3d4-0001-4000-8000-000000000001",
+    id: "030deea3-aacd-439d-a320-0feea2a3b3ee",
     title: "Singarsi Viewpoint",
     slug: "singarsi-viewpoint",
     category: "Cave & Hill",
@@ -26,7 +26,7 @@ export const TOURIST_SPOTS: TouristSpot[] = [
     createdAt: "2024-01-15T00:00:00.000Z"
   },
   {
-    id: "a1b2c3d4-0002-4000-8000-000000000002",
+    id: "0bfa0ea4-c5c8-4ef7-8eec-04443333ca07",
     title: "Kanchangarh Cave",
     slug: "kanchangarh-cave",
     category: "Cave & Hill",
@@ -49,7 +49,7 @@ export const TOURIST_SPOTS: TouristSpot[] = [
     createdAt: "2024-01-16T00:00:00.000Z"
   },
   {
-    id: "a1b2c3d4-0003-4000-8000-000000000003",
+    id: "cec91c5e-50bb-4bb2-8b41-900e2f762eaf",
     title: "Lilatari Waterfall",
     slug: "lilatari-waterfall",
     category: "Waterfall",
@@ -72,7 +72,7 @@ export const TOURIST_SPOTS: TouristSpot[] = [
     createdAt: "2024-01-17T00:00:00.000Z"
   },
   {
-    id: "a1b2c3d4-0004-4000-8000-000000000004",
+    id: "3bee2039-5ae2-4da3-8e77-4d7a16cf4211",
     title: "Dharni Pahar & Caves",
     slug: "dharni-pahar",
     category: "Cave & Hill",
@@ -95,7 +95,7 @@ export const TOURIST_SPOTS: TouristSpot[] = [
     createdAt: "2024-01-18T00:00:00.000Z"
   },
   {
-    id: "a1b2c3d4-0005-4000-8000-000000000005",
+    id: "e33ae59a-f510-4d2a-a36f-e34a127ccd02",
     title: "Sidho-Kanho Murmu Park",
     slug: "siddhu-kanhu-park",
     category: "Park & Heritage",
@@ -117,7 +117,7 @@ export const TOURIST_SPOTS: TouristSpot[] = [
     createdAt: "2024-01-19T00:00:00.000Z"
   },
   {
-    id: "a1b2c3d4-0006-4000-8000-000000000006",
+    id: "28198f0d-0610-4c2a-93f3-edbde41ff1a8",
     title: "Sidpur (Taatloi) Hot Spring",
     slug: "sidpur-hot-spring",
     category: "Thermal Spring",
@@ -139,7 +139,7 @@ export const TOURIST_SPOTS: TouristSpot[] = [
     createdAt: "2024-01-20T00:00:00.000Z"
   },
   {
-    id: "a1b2c3d4-0007-4000-8000-000000000007",
+    id: "d50e5d6d-f809-44ac-8098-56be09757f3b",
     title: "Hiranpur Pargana Nadi (Bansloi River Ghat)",
     slug: "hiranpur-pargana-nadi",
     category: "Waterfall",
@@ -161,7 +161,7 @@ export const TOURIST_SPOTS: TouristSpot[] = [
     createdAt: "2024-02-01T00:00:00.000Z"
   },
   {
-    id: "a1b2c3d4-0008-4000-8000-000000000008",
+    id: "5d2ab89b-054f-4558-a341-493346a26807",
     title: "Hiranpur Shill Durga Mandir",
     slug: "hiranpur-shill-durga-mandir",
     category: "Park & Heritage",
@@ -183,7 +183,7 @@ export const TOURIST_SPOTS: TouristSpot[] = [
     createdAt: "2024-02-02T00:00:00.000Z"
   },
   {
-    id: "a1b2c3d4-0009-4000-8000-000000000009",
+    id: "9de3d992-76a1-4b6e-8c33-99b1cba4b771",
     title: "Martello Tower",
     slug: "martello-tower",
     category: "Park & Heritage",
@@ -205,7 +205,7 @@ export const TOURIST_SPOTS: TouristSpot[] = [
     createdAt: "2024-02-03T00:00:00.000Z"
   },
   {
-    id: "a1b2c3d4-0010-4000-8000-000000000010",
+    id: "43d5a2de-7421-48dd-81cf-5a800495d2ad",
     title: "Nityakali Mandir",
     slug: "nityakali-mandir",
     category: "Park & Heritage",
@@ -227,7 +227,7 @@ export const TOURIST_SPOTS: TouristSpot[] = [
     createdAt: "2024-02-04T00:00:00.000Z"
   },
   {
-    id: "a1b2c3d4-0011-4000-8000-000000000011",
+    id: "a3cb1f77-d087-4da0-8f48-55663565e930",
     title: "Maheshpur Rajbari Heritage Palace",
     slug: "maheshpur-rajbari",
     category: "Park & Heritage",
@@ -249,7 +249,7 @@ export const TOURIST_SPOTS: TouristSpot[] = [
     createdAt: "2024-02-05T00:00:00.000Z"
   },
   {
-    id: "a1b2c3d4-0012-4000-8000-000000000012",
+    id: "6876c957-bcc9-437e-8274-ce21f7bec053",
     title: "Singhashi Hilltop Peak & Shrine",
     slug: "singhashi-hilltop-peak",
     category: "Cave & Hill",
@@ -271,7 +271,7 @@ export const TOURIST_SPOTS: TouristSpot[] = [
     createdAt: "2024-02-06T00:00:00.000Z"
   },
   {
-    id: "a1b2c3d4-0013-4000-8000-000000000013",
+    id: "fa40ef46-8824-4ded-a900-99c0277fd27b",
     title: "Hiranpur Weekly Haat & Tribal Craft Hub",
     slug: "hiranpur-craft-haat",
     category: "Local Market & Culture",
@@ -293,7 +293,7 @@ export const TOURIST_SPOTS: TouristSpot[] = [
     createdAt: "2024-02-07T00:00:00.000Z"
   },
   {
-    id: "a1b2c3d4-0014-4000-8000-000000000014",
+    id: "176091fa-7894-4fdf-8e7e-ef7d3c5abc5d",
     title: "Litipara Green Valley & Forest Reserve",
     slug: "litipara-eco-valley",
     category: "Cave & Hill",
@@ -315,7 +315,7 @@ export const TOURIST_SPOTS: TouristSpot[] = [
     createdAt: "2024-02-08T00:00:00.000Z"
   },
   {
-    id: "a1b2c3d4-0015-4000-8000-000000000015",
+    id: "029bf0ea-b956-4cc4-8a21-7e506e1efc8a",
     title: "Amrapara Forest Reserve & Stream Waterfall",
     slug: "amrapara-forest-waterfall",
     category: "Waterfall",
@@ -350,7 +350,7 @@ export const CATEGORY_OPTIONS = [
 export const VISITOR_REVIEWS: VisitorReview[] = [
   {
     id: "rev-01",
-    spotId: "a1b2c3d4-0001-4000-8000-000000000001",
+    spotId: "030deea3-aacd-439d-a320-0feea2a3b3ee",
     userName: "Sourav Ganguly",
     rating: 5,
     comment: "The sunrise from Singarsi peak over the Rajmahal hills was mesmerizing. Best eco-tourism spot in Jharkhand!",
@@ -359,7 +359,7 @@ export const VISITOR_REVIEWS: VisitorReview[] = [
   },
   {
     id: "rev-02",
-    spotId: "a1b2c3d4-0007-4000-8000-000000000007",
+    spotId: "cec91c5e-50bb-4bb2-8b41-900e2f762eaf",
     userName: "Rahul Sharma",
     rating: 5,
     comment: "Hiranpur Pargana Nadi on the Bansloi river is an incredible picnic spot with calm clear waters.",
@@ -368,7 +368,7 @@ export const VISITOR_REVIEWS: VisitorReview[] = [
   },
   {
     id: "rev-03",
-    spotId: "a1b2c3d4-0008-4000-8000-000000000008",
+    spotId: "0bfa0ea4-c5c8-4ef7-8eec-04443333ca07",
     userName: "Pooja Banerjee",
     rating: 5,
     comment: "Shill Durga Mandir in Hiranpur has a peaceful, divine aura. The rock formation view is breathtaking.",
