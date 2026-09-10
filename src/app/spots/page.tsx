@@ -24,7 +24,7 @@ export default function SpotsDirectoryPage() {
         const res = await fetch("/api/admin/spots", { cache: "no-store" });
         if (res.ok) {
           const data = await res.json();
-          if (data.spots && data.spots.length > 0) setSpots(data.spots);
+          if (data.spots && Array.isArray(data.spots)) setSpots(data.spots);
         }
       } catch (err) {
         console.error("Failed to load spots:", err);
