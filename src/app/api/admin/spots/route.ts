@@ -9,13 +9,14 @@ function verifyAuth(request: NextRequest): boolean {
   return verifyAdminAuth(request);
 }
 
-// GET /api/admin/spots - Public read access for frontend & admin dashboard
+// GET /api/admin/spots - Public read access for frontend & admin dashboard (supports ?lang=en|hi)
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
   const slug = searchParams.get('slug');
+  const lang = searchParams.get('lang') || 'en';
 
   if (slug) {
-    const spot = await getSpotBySlugAsync(slug);
+    const spot = await getSpotBySlugAsync(slug, lang);
     if (!spot) {
       return NextResponse.json({ error: 'Spot not found' }, { status: 404 });
     }
@@ -29,7 +30,7 @@ export async function GET(request: NextRequest) {
     );
   }
 
-  const spots = await getAllSpotsAsync();
+  const spots = await getAllSpotsAsync(lang);
   return NextResponse.json(
     { spots },
     {

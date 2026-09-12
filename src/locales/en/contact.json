@@ -1,0 +1,17 @@
+{
+  "badge": "Visitor Helpdesk",
+  "title": "Get in Touch with",
+  "titleHighlight": "Explore Pakur",
+  "subtitle": "Have questions about transport, local tour guides, or travel advice? Reach out to our regional volunteers.",
+  "formName": "Your Full Name",
+  "formEmail": "Email Address",
+  "formPhone": "Phone Number (Optional)",
+  "formSubject": "Subject / Topic",
+  "formMessage": "Your Message",
+  "formSubmit": "Send Message",
+  "formSubmitting": "Sending...",
+  "successMessage": "Thank you! Your inquiry has been sent to our helpdesk.",
+  "contactInfo": "District Information & Connectivity",
+  "railwayInfo": "Pakur Railway Junction (PKR), Eastern Railway",
+  "emailInfo": "contact@explorepakur.in"
+}

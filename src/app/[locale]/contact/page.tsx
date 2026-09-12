@@ -1,6 +1,7 @@
 ﻿import React from "react";
 import Link from "next/link";
 import { Metadata } from "next";
+import { setRequestLocale } from "next-intl/server";
 import ContactForm from "@/components/contact/ContactForm";
 import {
   Mail, Phone, MapPin, Clock, Shield, Sparkles,
@@ -39,7 +40,14 @@ export const metadata: Metadata = {
   },
 };
 
-export default function ContactPage() {
+interface ContactPageProps {
+  params: Promise<{ locale: string }>;
+}
+
+export default async function LocalizedContactPage({ params }: ContactPageProps) {
+  const { locale } = await params;
+  setRequestLocale(locale);
+  const isHi = locale === "hi";
   const jsonLd = {
     "@context": "https://schema.org",
     "@graph": [

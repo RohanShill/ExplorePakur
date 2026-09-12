@@ -1,19 +1,25 @@
-﻿"use client";
+"use client";
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useLocale, useTranslations } from "next-intl";
 import { Compass, Map, Navigation, Sparkles, ArrowUp } from "lucide-react";
 
 export const MobileBottomNav: React.FC = () => {
   const pathname = usePathname();
+  const locale = useLocale();
+  const t = useTranslations("navigation");
   const [activeTab, setActiveTab] = useState<string>("explore");
   const [showScrollTop, setShowScrollTop] = useState(false);
+
+  const homePath = `/${locale}`;
+  const spotsPath = `/${locale}/spots`;
 
   useEffect(() => {
     const handleScroll = () => {
       setShowScrollTop(window.scrollY > 400);
-      if (pathname === "/spots") { setActiveTab("spots"); return; }
+      if (pathname === spotsPath || pathname?.includes("/spots")) { setActiveTab("spots"); return; }
       const mapSection = document.getElementById("map-section");
       const roadTripSection = document.getElementById("road-trip-section");
       if (mapSection) {
@@ -28,44 +34,46 @@ export const MobileBottomNav: React.FC = () => {
     };
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
-  }, [pathname]);
+  }, [pathname, spotsPath]);
 
   const scrollToSection = (id: string) => {
     document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
   };
 
+  const isHome = pathname === homePath || pathname === `/${locale}/` || pathname === "/";
+
   const navItems = [
     {
       key: "explore",
       icon: Compass,
-      label: "Explore",
-      isActive: () => activeTab === "explore" && pathname === "/",
-      onClick: () => { if (pathname === "/") window.scrollTo({ top: 0, behavior: "smooth" }); },
-      href: "/",
+      label: t("home"),
+      isActive: () => activeTab === "explore" && isHome,
+      onClick: () => { if (isHome) window.scrollTo({ top: 0, behavior: "smooth" }); },
+      href: homePath,
       isLink: true,
     },
     {
       key: "spots",
       icon: Sparkles,
-      label: "Spots",
-      isActive: () => pathname === "/spots",
-      href: "/spots",
+      label: t("spots"),
+      isActive: () => pathname === spotsPath || pathname?.includes("/spots"),
+      href: spotsPath,
       isLink: true,
     },
     {
       key: "map",
       icon: Map,
-      label: "Map",
-      isActive: () => activeTab === "map" && pathname === "/",
-      onClick: () => pathname === "/" ? scrollToSection("map-section") : (window.location.href = "/#map-section"),
+      label: t("map"),
+      isActive: () => activeTab === "map" && isHome,
+      onClick: () => isHome ? scrollToSection("map-section") : (window.location.href = `${homePath}#map-section`),
       isLink: false,
     },
     {
       key: "roadtrip",
       icon: Navigation,
-      label: "Road Trip",
-      isActive: () => activeTab === "roadtrip" && pathname === "/",
-      onClick: () => pathname === "/" ? scrollToSection("road-trip-section") : (window.location.href = "/#road-trip-section"),
+      label: locale === "hi" ? "रोड ट्रिप" : "Road Trip",
+      isActive: () => activeTab === "roadtrip" && isHome,
+      onClick: () => isHome ? scrollToSection("road-trip-section") : (window.location.href = `${homePath}#road-trip-section`),
       isLink: false,
     },
   ];

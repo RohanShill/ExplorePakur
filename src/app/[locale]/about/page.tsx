@@ -1,6 +1,7 @@
 ﻿import React from "react";
 import Link from "next/link";
 import { Metadata } from "next";
+import { setRequestLocale } from "next-intl/server";
 import {
   Compass, MapPin, Shield, Heart, Trees, History,
   Sparkles, Train, Mountain, Users, ArrowRight, BookOpen, CheckCircle
@@ -40,7 +41,14 @@ export const metadata: Metadata = {
   },
 };
 
-export default function AboutPage() {
+interface AboutPageProps {
+  params: Promise<{ locale: string }>;
+}
+
+export default async function LocalizedAboutPage({ params }: AboutPageProps) {
+  const { locale } = await params;
+  setRequestLocale(locale);
+  const isHi = locale === "hi";
   const jsonLd = {
     "@context": "https://schema.org",
     "@graph": [
@@ -377,14 +385,14 @@ export default function AboutPage() {
 
               <div className="mt-6 pt-5 border-t border-[rgba(212,169,66,0.15)] flex flex-wrap gap-3">
                 <Link
-                  href="/spots"
+                  href={`/${locale}/spots`}
                   className="inline-flex items-center gap-2 bg-gradient-to-r from-[#D4A942] to-[#E8C56D] hover:from-[#c29636] hover:to-[#d4af54] text-[#08110B] font-bold text-xs px-5 py-2.5 rounded-xl transition-all shadow-md font-body"
                 >
                   <Compass size={14} />
                   <span>Explore 16+ Destinations</span>
                 </Link>
                 <Link
-                  href="/contact"
+                  href={`/${locale}/contact`}
                   className="inline-flex items-center gap-2 border border-[rgba(212,169,66,0.35)] text-[#D4A942] hover:bg-[rgba(212,169,66,0.08)] font-semibold text-xs px-5 py-2.5 rounded-xl transition-all font-body"
                 >
                   <span>Contact Tourism Helpdesk</span>

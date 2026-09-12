@@ -1,15 +1,19 @@
-﻿"use client";
+"use client";
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useTranslations, useLocale } from "next-intl";
 import { Menu, X, Compass, MapPin, BookOpen, Info, Mail, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
+import LanguageSwitcher from "@/components/ui/LanguageSwitcher";
 
 export const Navbar: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const pathname = usePathname();
+  const locale = useLocale();
+  const t = useTranslations("navigation");
 
   useEffect(() => {
     const handler = () => setScrolled(window.scrollY > 30);
@@ -21,11 +25,11 @@ export const Navbar: React.FC = () => {
   useEffect(() => { setIsOpen(false); }, [pathname]);
 
   const navLinks = [
-    { name: "Destinations", href: "/spots",             icon: Compass  },
-    { name: "District Map", href: "/#map-section",      icon: MapPin   },
-    { name: "Heritage",     href: "/#heritage-section", icon: BookOpen },
-    { name: "About",        href: "/about",             icon: Info     },
-    { name: "Contact",      href: "/contact",           icon: Mail     },
+    { name: t("destinations"), href: `/${locale}/spots`,             icon: Compass  },
+    { name: t("map"),          href: `/${locale}#map-section`,      icon: MapPin   },
+    { name: t("santhalHeritage"), href: `/${locale}#heritage-section`, icon: BookOpen },
+    { name: t("about"),        href: `/${locale}/about`,             icon: Info     },
+    { name: t("contact"),      href: `/${locale}/contact`,           icon: Mail     },
   ];
 
   return (
@@ -41,7 +45,7 @@ export const Navbar: React.FC = () => {
         <div className="flex items-center justify-between h-16 sm:h-20">
 
           {/* Brand */}
-          <Link href="/" className="flex items-center gap-2.5 sm:gap-3 group shrink-0">
+          <Link href={`/${locale}`} className="flex items-center gap-2.5 sm:gap-3 group shrink-0">
             <div className="relative h-9 w-9 sm:h-11 sm:w-11 rounded-xl overflow-hidden border border-[rgba(212,169,66,0.35)] shadow-[0_0_18px_rgba(212,169,66,0.2)] group-hover:shadow-[0_0_28px_rgba(212,169,66,0.35)] transition-all duration-300">
               <img src="/logo.png" alt="ExplorePakur Logo" className="h-full w-full object-cover" />
             </div>
@@ -50,7 +54,7 @@ export const Navbar: React.FC = () => {
                 Explore<span className="text-gold-gradient">Pakur</span>
               </span>
               <span className="text-[8px] sm:text-[9px] uppercase font-semibold tracking-[0.18em] text-[#7A9180] mt-0.5 font-body">
-                Jharkhand Eco-Tourism
+                {locale === 'hi' ? 'झारखंड ईको-टूरिज्म' : 'Jharkhand Eco-Tourism'}
               </span>
             </div>
           </Link>
@@ -80,14 +84,16 @@ export const Navbar: React.FC = () => {
             })}
           </nav>
 
-          {/* Desktop CTA + Mobile toggle */}
-          <div className="flex items-center gap-2">
+          {/* Desktop CTA + Language Switcher + Mobile toggle */}
+          <div className="flex items-center gap-2.5">
+            <LanguageSwitcher variant="desktop" />
+
             <Link
-              href="/spots"
-              className="hidden md:inline-flex items-center gap-2 text-xs font-semibold bg-transparent border border-[rgba(212,169,66,0.4)] text-[#D4A942] hover:bg-[rgba(212,169,66,0.08)] hover:border-[rgba(212,169,66,0.7)] px-3.5 py-2 rounded-xl transition-all duration-300 font-body"
+              href={`/${locale}/spots`}
+              className="hidden lg:inline-flex items-center gap-2 text-xs font-semibold bg-transparent border border-[rgba(212,169,66,0.4)] text-[#D4A942] hover:bg-[rgba(212,169,66,0.08)] hover:border-[rgba(212,169,66,0.7)] px-3.5 py-2 rounded-xl transition-all duration-300 font-body"
             >
               <Compass size={13} />
-              Explore Now
+              {locale === 'hi' ? 'देखें' : 'Explore'}
               <ChevronRight size={12} />
             </Link>
 
@@ -107,10 +113,12 @@ export const Navbar: React.FC = () => {
       <div
         className={cn(
           "md:hidden overflow-hidden transition-all duration-300 ease-in-out",
-          isOpen ? "max-h-96 opacity-100" : "max-h-0 opacity-0 pointer-events-none"
+          isOpen ? "max-h-[32rem] opacity-100" : "max-h-0 opacity-0 pointer-events-none"
         )}
       >
-        <div className="border-t border-[rgba(212,169,66,0.1)] px-4 py-3 space-y-1">
+        <div className="border-t border-[rgba(212,169,66,0.1)] px-4 py-3 space-y-2 bg-[rgba(3,8,6,0.98)] backdrop-blur-xl">
+          <LanguageSwitcher variant="mobile" />
+
           {navLinks.map((link) => {
             const Icon = link.icon;
             const isActive = pathname === link.href;
@@ -133,12 +141,12 @@ export const Navbar: React.FC = () => {
           })}
           <div className="pt-2">
             <Link
-              href="/spots"
+              href={`/${locale}/spots`}
               onClick={() => setIsOpen(false)}
               className="flex items-center justify-center gap-2 w-full text-sm font-semibold border border-[rgba(212,169,66,0.35)] text-[#D4A942] hover:bg-[rgba(212,169,66,0.1)] px-4 py-2.5 rounded-xl transition-all font-body"
             >
               <Compass size={15} />
-              Browse All Destinations
+              {t("allDestinations")}
             </Link>
           </div>
         </div>

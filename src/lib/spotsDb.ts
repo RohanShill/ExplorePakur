@@ -1,13 +1,15 @@
 ﻿import fs from 'fs';
 import path from 'path';
-import { TouristSpot } from '@/types';
+import { TouristSpot, TouristSpotTranslation } from '@/types';
 import { TOURIST_SPOTS } from './mockData';
 import { getSupabaseAdmin } from './supabase';
+import { translateSpotToHindi } from './translationService';
 
 const DATA_DIR = path.join(process.cwd(), 'data');
 const DATA_FILE = path.join(DATA_DIR, 'spots.json');
+const TRANSLATIONS_FILE = path.join(DATA_DIR, 'translations.json');
 
-// Ensure directory and file exist
+// Ensure directory and files exist
 function initLocalDb(): TouristSpot[] {
   try {
     if (!fs.existsSync(DATA_DIR)) {
@@ -30,17 +32,47 @@ function initLocalDb(): TouristSpot[] {
   }
 }
 
-export function getAllSpotsFromDb(): TouristSpot[] {
-  return initLocalDb();
+export function getAllTranslationsFromDb(): Record<string, TouristSpotTranslation> {
+  try {
+    if (!fs.existsSync(TRANSLATIONS_FILE)) {
+      return {};
+    }
+    const raw = fs.readFileSync(TRANSLATIONS_FILE, 'utf-8');
+    return JSON.parse(raw);
+  } catch {
+    return {};
+  }
 }
 
-export function getSpotBySlugFromDb(slug: string): TouristSpot | null {
-  const spots = getAllSpotsFromDb();
+export function saveTranslationsToDb(translations: Record<string, TouristSpotTranslation>): boolean {
+  try {
+    if (!fs.existsSync(DATA_DIR)) {
+      fs.mkdirSync(DATA_DIR, { recursive: true });
+    }
+    fs.writeFileSync(TRANSLATIONS_FILE, JSON.stringify(translations, null, 2), 'utf-8');
+    return true;
+  } catch (err) {
+    console.error('Error saving local translations:', err);
+    return false;
+  }
+}
+
+export function getAllSpotsFromDb(locale: string = 'en'): TouristSpot[] {
+  const spots = initLocalDb();
+  if (locale === 'hi') {
+    const translations = getAllTranslationsFromDb();
+    return spots.map((spot) => mergeTranslationIntoSpot(spot, translations[spot.id]));
+  }
+  return spots;
+}
+
+export function getSpotBySlugFromDb(slug: string, locale: string = 'en'): TouristSpot | null {
+  const spots = getAllSpotsFromDb(locale);
   return spots.find((s) => s.slug === slug) || null;
 }
 
-export function getSpotByIdFromDb(id: string): TouristSpot | null {
-  const spots = getAllSpotsFromDb();
+export function getSpotByIdFromDb(id: string, locale: string = 'en'): TouristSpot | null {
+  const spots = getAllSpotsFromDb(locale);
   return spots.find((s) => s.id === id) || null;
 }
 
@@ -62,6 +94,32 @@ export function saveSpotsToDb(spots: TouristSpot[]): boolean {
     console.error('Failed to save spots to DB:', err);
     return false;
   }
+}
+
+function mergeTranslationIntoSpot(spot: TouristSpot, translation?: TouristSpotTranslation): TouristSpot {
+  if (!translation) {
+    return { ...spot, translationStatus: 'pending' };
+  }
+
+  return {
+    ...spot,
+    title: translation.title || spot.title,
+    description: translation.description || spot.description,
+    longDescription: translation.longDescription || spot.longDescription,
+    culturalNote: translation.culturalNote || spot.culturalNote,
+    highlights: Array.isArray(translation.highlights) && translation.highlights.length > 0
+      ? translation.highlights
+      : spot.highlights,
+    bestTimeToVisit: translation.bestTimeToVisit || spot.bestTimeToVisit,
+    entryFee: translation.entryFee || spot.entryFee,
+    timing: translation.timing || spot.timing,
+    distanceFromPakurStation: translation.distanceFromPakurStation || spot.distanceFromPakurStation,
+    nearestRailway: translation.nearestRailway || spot.nearestRailway,
+    translationStatus: translation.translationStatus || 'translated',
+    translations: {
+      [translation.language]: translation,
+    },
+  };
 }
 
 function mapSupabaseRowToSpot(row: any): TouristSpot {
@@ -87,7 +145,95 @@ function mapSupabaseRowToSpot(row: any): TouristSpot {
   };
 }
 
-export async function getAllSpotsAsync(): Promise<TouristSpot[]> {
+export async function getSpotTranslationAsync(spotId: string, language: string = 'hi'): Promise<TouristSpotTranslation | null> {
+  try {
+    const supabase = getSupabaseAdmin();
+    if (supabase) {
+      const { data, error } = await supabase
+        .from('tourist_spot_translations')
+        .select('*')
+        .eq('spot_id', spotId)
+        .eq('language', language)
+        .maybeSingle();
+
+      if (!error && data) {
+        return {
+          id: data.id,
+          spotId: data.spot_id,
+          language: data.language,
+          title: data.title,
+          description: data.description,
+          longDescription: data.long_description,
+          culturalNote: data.cultural_note,
+          highlights: data.highlights,
+          bestTimeToVisit: data.best_time_to_visit,
+          distanceFromPakurStation: data.distance_from_pakur_station,
+          entryFee: data.entry_fee,
+          timing: data.timing,
+          nearestRailway: data.nearest_railway,
+          seoTitle: data.seo_title,
+          seoDescription: data.seo_description,
+          translationStatus: data.translation_status,
+          sourceUpdatedAt: data.source_updated_at,
+          translatedAt: data.translated_at,
+        };
+      }
+    }
+  } catch (err) {
+    // Supabase table may not exist yet, silently fall back to local
+  }
+
+  const local = getAllTranslationsFromDb();
+  return local[spotId] || null;
+}
+
+export async function saveSpotTranslationAsync(translation: TouristSpotTranslation): Promise<boolean> {
+  // 1. Save to local fallback
+  const local = getAllTranslationsFromDb();
+  local[translation.spotId] = translation;
+  saveTranslationsToDb(local);
+
+  // 2. Try saving to Supabase
+  try {
+    const supabase = getSupabaseAdmin();
+    if (supabase) {
+      const { error } = await supabase.from('tourist_spot_translations').upsert(
+        {
+          spot_id: translation.spotId,
+          language: translation.language,
+          title: translation.title,
+          description: translation.description,
+          long_description: translation.longDescription,
+          cultural_note: translation.culturalNote,
+          highlights: translation.highlights,
+          best_time_to_visit: translation.bestTimeToVisit,
+          distance_from_pakur_station: translation.distanceFromPakurStation,
+          entry_fee: translation.entryFee,
+          timing: translation.timing,
+          nearest_railway: translation.nearestRailway,
+          seo_title: translation.seoTitle,
+          seo_description: translation.seoDescription,
+          translation_status: translation.translationStatus,
+          source_updated_at: translation.sourceUpdatedAt,
+          translated_at: translation.translatedAt || new Date().toISOString(),
+        },
+        { onConflict: 'spot_id, language' }
+      );
+
+      if (error) {
+        console.warn('[Supabase Translation Upsert Notice]:', error.message);
+      }
+    }
+  } catch (err) {
+    console.warn('[Supabase Translation Save Warning]:', err);
+  }
+
+  return true;
+}
+
+export async function getAllSpotsAsync(locale: string = 'en'): Promise<TouristSpot[]> {
+  let mappedSpots: TouristSpot[] = [];
+
   try {
     const supabase = getSupabaseAdmin();
     if (supabase) {
@@ -97,18 +243,35 @@ export async function getAllSpotsAsync(): Promise<TouristSpot[]> {
         .order('created_at', { ascending: false });
 
       if (!error && Array.isArray(data) && data.length > 0) {
-        const mapped = data.map(mapSupabaseRowToSpot);
-        saveSpotsToDb(mapped);
-        return mapped;
+        mappedSpots = data.map(mapSupabaseRowToSpot);
+        saveSpotsToDb(mappedSpots);
       }
     }
   } catch (err) {
     console.warn('[Supabase Sync] Fetching fallback from local DB:', err);
   }
-  return getAllSpotsFromDb();
+
+  if (mappedSpots.length === 0) {
+    mappedSpots = getAllSpotsFromDb();
+  }
+
+  if (locale === 'hi') {
+    const localTranslations = getAllTranslationsFromDb();
+    return mappedSpots.map((spot) => mergeTranslationIntoSpot(spot, localTranslations[spot.id]));
+  }
+
+  // Attach translation status for admin convenience
+  const localTranslations = getAllTranslationsFromDb();
+  return mappedSpots.map((spot) => ({
+    ...spot,
+    translationStatus: localTranslations[spot.id]?.translationStatus || 'pending',
+    translations: localTranslations[spot.id] ? { hi: localTranslations[spot.id] } : undefined,
+  }));
 }
 
-export async function getSpotBySlugAsync(slug: string): Promise<TouristSpot | null> {
+export async function getSpotBySlugAsync(slug: string, locale: string = 'en'): Promise<TouristSpot | null> {
+  let spot: TouristSpot | null = null;
+
   try {
     const supabase = getSupabaseAdmin();
     if (supabase) {
@@ -119,16 +282,35 @@ export async function getSpotBySlugAsync(slug: string): Promise<TouristSpot | nu
         .maybeSingle();
 
       if (!error && data) {
-        return mapSupabaseRowToSpot(data);
+        spot = mapSupabaseRowToSpot(data);
       }
     }
   } catch (err) {
     console.warn('[Supabase Slug Sync] Fallback to local DB:', err);
   }
-  return getSpotBySlugFromDb(slug);
+
+  if (!spot) {
+    spot = getSpotBySlugFromDb(slug);
+  }
+
+  if (!spot) return null;
+
+  if (locale === 'hi') {
+    const translation = await getSpotTranslationAsync(spot.id, 'hi');
+    return mergeTranslationIntoSpot(spot, translation || undefined);
+  }
+
+  const translation = await getSpotTranslationAsync(spot.id, 'hi');
+  return {
+    ...spot,
+    translationStatus: translation?.translationStatus || 'pending',
+    translations: translation ? { hi: translation } : undefined,
+  };
 }
 
-export async function getSpotByIdAsync(id: string): Promise<TouristSpot | null> {
+export async function getSpotByIdAsync(id: string, locale: string = 'en'): Promise<TouristSpot | null> {
+  let spot: TouristSpot | null = null;
+
   try {
     const supabase = getSupabaseAdmin();
     if (supabase) {
@@ -139,25 +321,32 @@ export async function getSpotByIdAsync(id: string): Promise<TouristSpot | null> 
         .maybeSingle();
 
       if (!error && data) {
-        const mapped = mapSupabaseRowToSpot(data);
-        const spots = getAllSpotsFromDb();
-        const idx = spots.findIndex((s) => s.id === id);
-        if (idx >= 0) {
-          spots[idx] = mapped;
-        } else {
-          spots.unshift(mapped);
-        }
-        saveSpotsToDb(spots);
-        return mapped;
+        spot = mapSupabaseRowToSpot(data);
       }
     }
   } catch (err) {
     console.warn('[Supabase Id Sync] Fallback to local DB:', err);
   }
-  return getSpotByIdFromDb(id);
+
+  if (!spot) {
+    spot = getSpotByIdFromDb(id);
+  }
+
+  if (!spot) return null;
+
+  const translation = await getSpotTranslationAsync(spot.id, 'hi');
+  if (locale === 'hi') {
+    return mergeTranslationIntoSpot(spot, translation || undefined);
+  }
+
+  return {
+    ...spot,
+    translationStatus: translation?.translationStatus || 'pending',
+    translations: translation ? { hi: translation } : undefined,
+  };
 }
 
-export async function createSpotInDb(data: Partial<TouristSpot>): Promise<TouristSpot> {
+export async function createSpotInDb(data: Partial<TouristSpot> & { hindiTranslation?: Partial<TouristSpotTranslation> }): Promise<TouristSpot> {
   const spots = getAllSpotsFromDb();
   const id = crypto.randomUUID();
   const lat = typeof data.latitude === 'string' ? parseFloat(data.latitude) : Number(data.latitude);
@@ -217,10 +406,44 @@ export async function createSpotInDb(data: Partial<TouristSpot>): Promise<Touris
     console.warn('[Supabase Sync] Insert sync failed, local copy active:', err);
   }
 
+  // Handle Hindi translation: if provided by admin, use it; otherwise auto-translate
+  try {
+    if (data.hindiTranslation && data.hindiTranslation.title) {
+      const manualTrans: TouristSpotTranslation = {
+        spotId: newSpot.id,
+        language: 'hi',
+        title: data.hindiTranslation.title,
+        description: data.hindiTranslation.description || newSpot.description,
+        longDescription: data.hindiTranslation.longDescription || newSpot.longDescription,
+        culturalNote: data.hindiTranslation.culturalNote || newSpot.culturalNote,
+        highlights: data.hindiTranslation.highlights || newSpot.highlights,
+        bestTimeToVisit: data.hindiTranslation.bestTimeToVisit || newSpot.bestTimeToVisit,
+        entryFee: data.hindiTranslation.entryFee || newSpot.entryFee,
+        timing: data.hindiTranslation.timing || newSpot.timing,
+        distanceFromPakurStation: data.hindiTranslation.distanceFromPakurStation || newSpot.distanceFromPakurStation,
+        nearestRailway: data.hindiTranslation.nearestRailway || newSpot.nearestRailway,
+        translationStatus: 'translated',
+        sourceUpdatedAt: new Date().toISOString(),
+        translatedAt: new Date().toISOString(),
+      };
+      await saveSpotTranslationAsync(manualTrans);
+    } else {
+      // Auto-translate in background
+      translateSpotToHindi(newSpot).then((trans) => {
+        saveSpotTranslationAsync(trans);
+      }).catch((e) => console.warn('[Auto-translate failed]:', e));
+    }
+  } catch (err) {
+    console.warn('[Auto-translate trigger warning]:', err);
+  }
+
   return newSpot;
 }
 
-export async function updateSpotInDb(id: string, data: Partial<TouristSpot>): Promise<TouristSpot | null> {
+export async function updateSpotInDb(
+  id: string,
+  data: Partial<TouristSpot> & { hindiTranslation?: Partial<TouristSpotTranslation> }
+): Promise<TouristSpot | null> {
   let spots = getAllSpotsFromDb();
   let index = spots.findIndex((s) => s.id === id);
 
@@ -287,6 +510,45 @@ export async function updateSpotInDb(id: string, data: Partial<TouristSpot>): Pr
     console.warn('[Supabase Sync] Update sync failed:', err);
   }
 
+  // Handle Hindi translation on update
+  try {
+    if (data.hindiTranslation && data.hindiTranslation.title) {
+      const manualTrans: TouristSpotTranslation = {
+        spotId: id,
+        language: 'hi',
+        title: data.hindiTranslation.title,
+        description: data.hindiTranslation.description || updatedSpot.description,
+        longDescription: data.hindiTranslation.longDescription || updatedSpot.longDescription,
+        culturalNote: data.hindiTranslation.culturalNote || updatedSpot.culturalNote,
+        highlights: data.hindiTranslation.highlights || updatedSpot.highlights,
+        bestTimeToVisit: data.hindiTranslation.bestTimeToVisit || updatedSpot.bestTimeToVisit,
+        entryFee: data.hindiTranslation.entryFee || updatedSpot.entryFee,
+        timing: data.hindiTranslation.timing || updatedSpot.timing,
+        distanceFromPakurStation: data.hindiTranslation.distanceFromPakurStation || updatedSpot.distanceFromPakurStation,
+        nearestRailway: data.hindiTranslation.nearestRailway || updatedSpot.nearestRailway,
+        translationStatus: 'translated',
+        sourceUpdatedAt: new Date().toISOString(),
+        translatedAt: new Date().toISOString(),
+      };
+      await saveSpotTranslationAsync(manualTrans);
+    } else {
+      // Check if English content changed significantly
+      const englishChanged =
+        existing.title !== updatedSpot.title ||
+        existing.description !== updatedSpot.description ||
+        existing.culturalNote !== updatedSpot.culturalNote;
+
+      if (englishChanged) {
+        // Auto-translate to update Hindi
+        translateSpotToHindi(updatedSpot).then((trans) => {
+          saveSpotTranslationAsync(trans);
+        }).catch((e) => console.warn('[Auto-translate update failed]:', e));
+      }
+    }
+  } catch (err) {
+    console.warn('[Auto-translate update error]:', err);
+  }
+
   return updatedSpot;
 }
 
@@ -297,6 +559,13 @@ export async function deleteSpotInDb(id: string): Promise<TouristSpot | null> {
   if (index !== -1) {
     deleted = spots.splice(index, 1)[0];
     saveSpotsToDb(spots);
+  }
+
+  // Remove local translation
+  const local = getAllTranslationsFromDb();
+  if (local[id]) {
+    delete local[id];
+    saveTranslationsToDb(local);
   }
 
   try {
@@ -312,6 +581,7 @@ export async function deleteSpotInDb(id: string): Promise<TouristSpot | null> {
           deleted = mapSupabaseRowToSpot(supaRow);
         }
       }
+      await supabase.from('tourist_spot_translations').delete().eq('spot_id', id);
       const { error } = await supabase.from('tourist_spots').delete().eq('id', id);
       if (error) {
         console.error('[Supabase Delete Error]', error.message);

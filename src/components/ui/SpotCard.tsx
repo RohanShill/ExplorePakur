@@ -1,5 +1,8 @@
-﻿import React from "react";
+"use client";
+
+import React from "react";
 import Link from "next/link";
+import { useLocale } from "next-intl";
 import { TouristSpot } from "@/types";
 import CategoryBadge from "./CategoryBadge";
 import { MapPin, Calendar, ArrowRight, Compass, Sparkles, Navigation } from "lucide-react";
@@ -14,7 +17,10 @@ interface SpotCardProps {
 }
 
 export const SpotCard: React.FC<SpotCardProps> = ({ spot, featured = false }) => {
+  const locale = useLocale();
+  const isHi = locale === "hi";
   const googleMapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${spot.latitude},${spot.longitude}&travelmode=driving`;
+  const detailUrl = `/${locale}/spots/${spot.slug}`;
 
   return (
     <div className="group relative flex flex-col bg-[#0D1912] rounded-2xl border border-[rgba(212,169,66,0.12)] hover:border-[rgba(212,169,66,0.35)] transition-all duration-500 overflow-hidden hover:-translate-y-2 card-shadow hover:card-shadow-hover">
@@ -34,7 +40,7 @@ export const SpotCard: React.FC<SpotCardProps> = ({ spot, featured = false }) =>
           <CategoryBadge category={spot.category} />
           {spot.distanceKm != null && (
             <span className="inline-flex items-center gap-1 bg-[#00C785] text-[#030806] text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md shadow-md">
-              {spot.distanceKm.toFixed(1)} km away
+              {spot.distanceKm.toFixed(1)} {isHi ? "किमी दूर" : "km away"}
             </span>
           )}
         </div>
@@ -43,7 +49,7 @@ export const SpotCard: React.FC<SpotCardProps> = ({ spot, featured = false }) =>
         {featured && (
           <div className="absolute top-3.5 right-3.5 z-10 inline-flex items-center gap-1 bg-[rgba(212,169,66,0.15)] border border-[rgba(212,169,66,0.4)] text-[#D4A942] text-[10px] font-semibold uppercase tracking-wider px-2.5 py-1 rounded-full backdrop-blur-md">
             <Sparkles size={10} />
-            Top Pick
+            {isHi ? "विशेष चयन" : "Top Pick"}
           </div>
         )}
 
@@ -67,7 +73,7 @@ export const SpotCard: React.FC<SpotCardProps> = ({ spot, featured = false }) =>
       {/* Card body */}
       <div className="flex flex-1 flex-col p-5 space-y-4">
         <div className="space-y-2">
-          <Link href={`/spots/${spot.slug}`} className="block group/title">
+          <Link href={detailUrl} className="block group/title">
             <h3 className="text-lg font-bold text-[#F5F0E8] group-hover/title:text-[#D4A942] transition-colors line-clamp-1 font-serif">
               {spot.title}
             </h3>
@@ -93,11 +99,11 @@ export const SpotCard: React.FC<SpotCardProps> = ({ spot, featured = false }) =>
         {/* Actions */}
         <div className="pt-3 border-t border-[rgba(212,169,66,0.08)] flex items-center gap-2.5">
           <Link
-            href={`/spots/${spot.slug}`}
+            href={detailUrl}
             className="flex-1 inline-flex items-center justify-center gap-1.5 text-xs font-semibold text-[#F5F0E8] bg-[rgba(212,169,66,0.07)] hover:bg-[#D4A942] hover:text-[#030806] py-2.5 px-3 rounded-xl border border-[rgba(212,169,66,0.2)] hover:border-[#D4A942] transition-all duration-300 active:scale-95 group/btn font-body"
           >
             <Compass size={14} className="text-[#D4A942] group-hover/btn:text-[#030806] transition-colors" />
-            <span>Full Guide</span>
+            <span>{isHi ? "संपूर्ण विवरण" : "Full Guide"}</span>
             <ArrowRight size={13} className="transition-transform group-hover/btn:translate-x-0.5" />
           </Link>
           <a
@@ -107,7 +113,7 @@ export const SpotCard: React.FC<SpotCardProps> = ({ spot, featured = false }) =>
             className="inline-flex items-center justify-center gap-1.5 text-xs font-semibold bg-[#00C785] hover:bg-[#00E596] text-[#030806] py-2.5 px-3.5 rounded-xl shadow-[0_2px_14px_rgba(0,199,133,0.3)] hover:shadow-[0_4px_20px_rgba(0,199,133,0.45)] transition-all active:scale-95 whitespace-nowrap font-body"
           >
             <Navigation size={13} />
-            Directions
+            {isHi ? "दिशा-निर्देश" : "Directions"}
           </a>
         </div>
       </div>

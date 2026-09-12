@@ -9,12 +9,15 @@ function verifyAuth(request: NextRequest): boolean {
   return verifyAdminAuth(request);
 }
 
-// GET /api/admin/spots/[id] - Get single spot with cloud + local fallback
+// GET /api/admin/spots/[id] - Get single spot with cloud + local fallback (supports ?lang=en|hi)
 export async function GET(
   request: NextRequest,
   { params }: { params: { id: string } }
 ) {
-  const spot = await getSpotByIdAsync(params.id);
+  const { searchParams } = new URL(request.url);
+  const lang = searchParams.get('lang') || 'en';
+
+  const spot = await getSpotByIdAsync(params.id, lang);
   if (!spot) {
     return NextResponse.json({ error: 'Spot not found' }, { status: 404 });
   }

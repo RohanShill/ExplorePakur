@@ -13,10 +13,11 @@ import {
   Star, ArrowLeft, Sparkles, Train, Ticket,
 } from "lucide-react";
 import { formatCoordinates, getOsmDirectionsUrl, getGpsNavigationUrl } from "@/lib/utils";
+import { setRequestLocale } from "next-intl/server";
 import type { Metadata } from "next";
 
 interface SpotDetailsProps {
-  params: { slug: string };
+  params: Promise<{ locale: string; slug: string }>;
 }
 
 export async function generateStaticParams() {
@@ -25,12 +26,14 @@ export async function generateStaticParams() {
 }
 
 export async function generateMetadata({ params }: SpotDetailsProps): Promise<Metadata> {
-  const spot = await getSpotBySlug(params.slug);
+  const { locale, slug } = await params;
+  const spot = await getSpotBySlug(slug, locale);
+  const isHi = locale === "hi";
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://explorepakur.in";
 
   if (!spot) return { title: "Destination Not Found - Explore Pakur" };
 
-  const spotUrl = `${siteUrl}/spots/${spot.slug}`;
+  const spotUrl = `${siteUrl}/${locale}/spots/${spot.slug}`;
   const metaDescription =
     spot.longDescription ||
     `${spot.description} Best time to visit: ${spot.bestTimeToVisit}. Located in Pakur district, Jharkhand.`;
@@ -50,6 +53,11 @@ export async function generateMetadata({ params }: SpotDetailsProps): Promise<Me
     ],
     alternates: {
       canonical: spotUrl,
+      languages: {
+        en: `${siteUrl}/en/spots/${spot.slug}`,
+        hi: `${siteUrl}/hi/spots/${spot.slug}`,
+        "x-default": `${siteUrl}/en/spots/${spot.slug}`,
+      },
     },
     openGraph: {
       title: `${spot.title} - Pakur Eco-Tourism, Jharkhand`,
@@ -76,8 +84,11 @@ export async function generateMetadata({ params }: SpotDetailsProps): Promise<Me
   };
 }
 
-export default async function SpotDetailPage({ params }: SpotDetailsProps) {
-  const spot = await getSpotBySlug(params.slug);
+export default async function LocalizedSpotDetailPage({ params }: SpotDetailsProps) {
+  const { locale, slug } = await params;
+  setRequestLocale(locale);
+  const isHi = locale === "hi";
+  const spot = await getSpotBySlug(slug, locale);
   if (!spot) notFound();
 
   const reviews = await getReviewsForSpot(spot.id);
@@ -91,7 +102,8 @@ export default async function SpotDetailPage({ params }: SpotDetailsProps) {
         "@id": `${siteUrl}/spots/${spot.slug}#attraction`,
         "name": spot.title,
         "description": spot.longDescription || spot.description,
-        "url": `${siteUrl}/spots/${spot.slug}`,
+        "url": `${siteUrl}/${locale}/spots/${spot.slug}`,
+        "inLanguage": locale,
         "image": [spot.coverImage, ...(spot.galleryImages || [])],
         "touristType": [spot.category, "Eco-Tourism", "Nature Destination"],
         "geo": {
@@ -155,7 +167,7 @@ export default async function SpotDetailPage({ params }: SpotDetailsProps) {
         <div className="border-b border-[rgba(212,169,66,0.1)]" style={{ background: "var(--bg-deep)" }}>
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex items-center justify-between">
             <Link
-              href="/spots"
+              href={`/${locale}/spots`}
               className="inline-flex items-center gap-1.5 text-xs font-medium text-[#7A9180] hover:text-[#D4A942] transition-colors font-body"
             >
               <ArrowLeft size={14} />

@@ -1,27 +1,27 @@
-import { TouristSpot, VisitorReview } from '@/types';
+﻿import { TouristSpot, VisitorReview } from '@/types';
 import { VISITOR_REVIEWS } from './mockData';
 import { getAllSpotsAsync, getSpotBySlugAsync, getAllSpotsFromDb, getSpotBySlugFromDb } from './spotsDb';
 
 /**
- * Data access layer backed by Supabase Cloud PostgreSQL with local offline fallback.
- * Changes made in the Admin panel reflect instantly across all pages.
+ * Multilingual data access layer backed by Supabase Cloud PostgreSQL with local offline fallback.
+ * Automatically serves translated Hindi fields when locale is 'hi'.
  */
 
-export async function getAllSpots(): Promise<TouristSpot[]> {
+export async function getAllSpots(locale: string = 'en'): Promise<TouristSpot[]> {
   try {
-    return await getAllSpotsAsync();
+    return await getAllSpotsAsync(locale);
   } catch (err) {
     console.error('Failed to get spots from Supabase, using local DB:', err);
-    return getAllSpotsFromDb();
+    return getAllSpotsFromDb(locale);
   }
 }
 
-export async function getSpotBySlug(slug: string): Promise<TouristSpot | null> {
+export async function getSpotBySlug(slug: string, locale: string = 'en'): Promise<TouristSpot | null> {
   try {
-    return await getSpotBySlugAsync(slug);
+    return await getSpotBySlugAsync(slug, locale);
   } catch (err) {
     console.error('Failed to get spot with slug: ' + slug, err);
-    return getSpotBySlugFromDb(slug);
+    return getSpotBySlugFromDb(slug, locale);
   }
 }
 

@@ -8,8 +8,11 @@ import DynamicMap from "@/components/map/DynamicMap";
 import ScrollReveal from "@/components/animations/ScrollReveal";
 import { Search, MapPin, Map, Grid, Crosshair, Compass } from "lucide-react";
 import { calculateDistanceKm } from "@/lib/utils";
+import { useLocale, useTranslations } from "next-intl";
 
 export default function SpotsDirectoryClient({ initialSpots = [] }: { initialSpots: TouristSpot[] }) {
+  const locale = useLocale();
+  const isHi = locale === "hi";
   const [spots, setSpots] = useState<TouristSpot[]>(initialSpots.length > 0 ? initialSpots : TOURIST_SPOTS);
   const [selectedCategory, setSelectedCategory] = useState<SpotCategory | "All">("All");
   const [searchQuery, setSearchQuery] = useState("");
@@ -21,7 +24,7 @@ export default function SpotsDirectoryClient({ initialSpots = [] }: { initialSpo
   useEffect(() => {
     async function loadSpots() {
       try {
-        const res = await fetch("/api/admin/spots", { cache: "no-store" });
+        const res = await fetch(`/api/admin/spots?lang=${locale}`, { cache: "no-store" });
         if (res.ok) {
           const data = await res.json();
           if (data.spots && Array.isArray(data.spots)) setSpots(data.spots);
@@ -31,7 +34,7 @@ export default function SpotsDirectoryClient({ initialSpots = [] }: { initialSpo
       }
     }
     loadSpots();
-  }, []);
+  }, [locale]);
 
   const handleNearMe = () => {
     if (!navigator.geolocation) { alert("Geolocation not supported."); return; }

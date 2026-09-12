@@ -14,10 +14,13 @@ import {
   ChevronDown, ChevronUp, Trees, Map, Shield,
 } from "lucide-react";
 import { calculateDistanceKm } from "@/lib/utils";
+import { useLocale, useTranslations } from "next-intl";
 
 
 
 export default function HomePageClient({ initialSpots = [] }: { initialSpots: TouristSpot[] }) {
+  const locale = useLocale();
+  const isHi = locale === "hi";
   const [spots, setSpots] = useState<TouristSpot[]>(initialSpots.length > 0 ? initialSpots : TOURIST_SPOTS);
   const [selectedCategory, setSelectedCategory] = useState<SpotCategory | "All">("All");
   const [searchQuery, setSearchQuery] = useState("");
@@ -29,7 +32,7 @@ export default function HomePageClient({ initialSpots = [] }: { initialSpots: To
   useEffect(() => {
     async function loadSpots() {
       try {
-        const res = await fetch("/api/admin/spots", { cache: "no-store" });
+        const res = await fetch(`/api/admin/spots?lang=${locale}`, { cache: "no-store" });
         if (res.ok) {
           const data = await res.json();
           if (data.spots && Array.isArray(data.spots)) setSpots(data.spots);
@@ -39,7 +42,7 @@ export default function HomePageClient({ initialSpots = [] }: { initialSpots: To
       }
     }
     loadSpots();
-  }, []);
+  }, [locale]);
 
   const handleNearMe = () => {
     if (!navigator.geolocation) { alert("Geolocation not supported."); return; }
@@ -172,7 +175,7 @@ export default function HomePageClient({ initialSpots = [] }: { initialSpots: To
             )}
           </div>
           <Link
-            href="/spots"
+            href={`/${locale}/spots`}
             className="self-start sm:self-auto inline-flex items-center gap-1.5 text-xs font-semibold border border-[rgba(212,169,66,0.3)] text-[#D4A942] hover:bg-[rgba(212,169,66,0.08)] px-4 py-2.5 rounded-xl transition-all font-body shrink-0"
           >
             Full Directory ({filteredSpots.length})
@@ -205,7 +208,7 @@ export default function HomePageClient({ initialSpots = [] }: { initialSpots: To
                     : <><ChevronDown size={15} className="text-[#D4A942]" /><span>View {filteredSpots.length - 6} More</span></>}
                 </button>
                 <Link
-                  href="/spots"
+                  href={`/${locale}/spots`}
                   className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-[#D4A942] hover:bg-[#E8C060] text-[#030806] text-sm font-semibold shadow-[0_2px_15px_rgba(212,169,66,0.35)] transition-all font-body"
                 >
                   Full Map &amp; Directory
