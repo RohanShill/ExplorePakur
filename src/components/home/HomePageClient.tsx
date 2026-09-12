@@ -20,6 +20,7 @@ import { useLocale, useTranslations } from "next-intl";
 
 export default function HomePageClient({ initialSpots = [] }: { initialSpots: TouristSpot[] }) {
   const locale = useLocale();
+  const t = useTranslations("home");
   const isHi = locale === "hi";
   const [spots, setSpots] = useState<TouristSpot[]>(initialSpots.length > 0 ? initialSpots : TOURIST_SPOTS);
   const [selectedCategory, setSelectedCategory] = useState<SpotCategory | "All">("All");
@@ -89,7 +90,7 @@ export default function HomePageClient({ initialSpots = [] }: { initialSpots: To
           <div className="space-y-4">
             <div className="flex items-center gap-2 text-[#D4A942] text-[10px] sm:text-xs font-semibold uppercase tracking-[0.2em] font-body">
               <Map size={13} />
-              Interactive District Map
+              {t("mapBadge")}
             </div>
             <div className="flex flex-col gap-4">
               <h2 className="font-serif font-bold text-[#F5F0E8] text-2xl sm:text-3xl md:text-4xl leading-tight">
@@ -158,19 +159,17 @@ export default function HomePageClient({ initialSpots = [] }: { initialSpots: To
           <div className="space-y-1.5">
             <div className="flex items-center gap-2 text-[#D4A942] text-[10px] sm:text-xs font-semibold uppercase tracking-[0.2em] font-body">
               <Trees size={13} />
-              {hasRemainingSpots && !showAllSpots ? "Curated Highlights" : "Full Catalog"}
+              {hasRemainingSpots && !showAllSpots ? t("curatedHighlights") : t("fullCatalog")}
             </div>
             <h2 className="font-serif font-bold text-[#F5F0E8] text-2xl sm:text-3xl md:text-4xl leading-tight">
-              {hasRemainingSpots && !showAllSpots ? "Must-Visit Destinations" : `All ${filteredSpots.length} Destinations`}
+              {hasRemainingSpots && !showAllSpots ? t("mustVisitDestinations") : t("allDestinations", { count: filteredSpots.length })}
             </h2>
             <p className="text-xs sm:text-sm text-[#7A9180] max-w-xl font-body">
-              {hasRemainingSpots && !showAllSpots
-                ? `Showing ${displayedSpots.length} of ${filteredSpots.length} handpicked landmarks.`
-                : "All registered eco-tourism destinations across Pakur District."}
+              {hasRemainingSpots && !showAllSpots ? t("showingOf", { shown: displayedSpots.length, total: filteredSpots.length }) : t("allRegistered")}
             </p>
             {sortByNearest && userCoords && (
               <p className="text-xs text-[#D4A942] font-semibold font-body flex items-center gap-1">
-                <MapPin size={11} /> Sorted by nearest GPS location
+                <MapPin size={11} /> {t("sortedByGps")}
               </p>
             )}
           </div>
@@ -178,7 +177,7 @@ export default function HomePageClient({ initialSpots = [] }: { initialSpots: To
             href={`/${locale}/spots`}
             className="self-start sm:self-auto inline-flex items-center gap-1.5 text-xs font-semibold border border-[rgba(212,169,66,0.3)] text-[#D4A942] hover:bg-[rgba(212,169,66,0.08)] px-4 py-2.5 rounded-xl transition-all font-body shrink-0"
           >
-            Full Directory ({filteredSpots.length})
+            {t("fullDirectory", { count: filteredSpots.length })}
             <ArrowRight size={13} />
           </Link>
         </div>
@@ -203,15 +202,13 @@ export default function HomePageClient({ initialSpots = [] }: { initialSpots: To
                   onClick={() => setShowAllSpots(!showAllSpots)}
                   className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-[var(--bg-card)] hover:bg-[var(--bg-elevated)] text-[#F5F0E8] text-sm font-semibold border border-[rgba(212,169,66,0.15)] hover:border-[rgba(212,169,66,0.35)] transition-all font-body"
                 >
-                  {showAllSpots
-                    ? <><ChevronUp size={15} className="text-[#D4A942]" /><span>Show Less</span></>
-                    : <><ChevronDown size={15} className="text-[#D4A942]" /><span>View {filteredSpots.length - 6} More</span></>}
+                  {showAllSpots ? <><ChevronUp size={15} className="text-[#D4A942]" /><span>{t("showLess")}</span></> : <><ChevronDown size={15} className="text-[#D4A942]" /><span>{t("viewMore", { count: filteredSpots.length - 6 })}</span></>}
                 </button>
                 <Link
                   href={`/${locale}/spots`}
                   className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-[#D4A942] hover:bg-[#E8C060] text-[#030806] text-sm font-semibold shadow-[0_2px_15px_rgba(212,169,66,0.35)] transition-all font-body"
                 >
-                  Full Map &amp; Directory
+                  {t("fullMapDirectory")}
                   <ArrowRight size={14} />
                 </Link>
               </div>
@@ -219,12 +216,12 @@ export default function HomePageClient({ initialSpots = [] }: { initialSpots: To
           </>
         ) : (
           <div className="text-center py-14 bg-[var(--bg-card)] rounded-2xl border border-[rgba(212,169,66,0.12)] space-y-3">
-            <p className="text-[#7A9180] font-body text-sm">No destinations match &ldquo;{searchQuery}&rdquo;.</p>
+            <p className="text-[#7A9180] font-body text-sm">{t("noDestinationsMatch", { query: searchQuery })}</p>
             <button
               onClick={() => { setSelectedCategory("All"); setSearchQuery(""); setSortByNearest(false); }}
               className="text-sm font-semibold text-[#D4A942] hover:underline font-body"
             >
-              Reset Filters
+              {t("resetFilters")}
             </button>
           </div>
         )}
@@ -247,21 +244,21 @@ export default function HomePageClient({ initialSpots = [] }: { initialSpots: To
             <div className="space-y-6">
               <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-[rgba(212,169,66,0.3)] text-[#D4A942] text-[11px] sm:text-xs font-semibold uppercase tracking-[0.15em] font-body bg-[rgba(212,169,66,0.06)]">
                 <Sparkles size={11} />
-                Indigenous Santhal Heritage
+                {t("heritageBadge")}
               </div>
               <h2 className="font-serif font-bold text-[#F5F0E8] text-3xl sm:text-4xl md:text-5xl leading-[1.15]">
                 Living Traditions of the{" "}
                 <span className="text-gold-gradient italic">Santhal Pargana</span>
               </h2>
               <p className="text-[#7A9180] text-sm sm:text-base leading-relaxed font-body">
-                Pakur is the ancient heartland of Santhal culture — home of legendary tribal heroes Sidho and Kanho Murmu, time-honored Sohrai art, and weekly village haats. Sacred groves have preserved nature and tradition for centuries.
+                {t("heritageDesc")}
               </p>
               {/* Tags — 3-col grid on mobile */}
               <div className="grid grid-cols-3 gap-2.5">
                 {[
-                  { label: "Sacred Sal Groves",    icon: "🌿" },
-                  { label: "Sohrai & Khovar Art",  icon: "🎨" },
-                  { label: "Baha Festivities",      icon: "🥁" },
+                  { label: t("sacredGroves"), icon: "🌿" },
+                  { label: t("sohraiArt"), icon: "🎨" },
+                  { label: t("bahaFest"), icon: "🥁" },
                 ].map((item) => (
                   <div
                     key={item.label}
@@ -274,7 +271,7 @@ export default function HomePageClient({ initialSpots = [] }: { initialSpots: To
               </div>
               <div className="flex items-center gap-2">
                 <Shield size={14} className="text-[#00C785] shrink-0" />
-                <span className="text-xs text-[#7A9180] font-body">UNESCO-recognized tribal heritage zone</span>
+                <span className="text-xs text-[#7A9180] font-body">{t("unescoZone")}</span>
               </div>
             </div>
 
@@ -288,8 +285,8 @@ export default function HomePageClient({ initialSpots = [] }: { initialSpots: To
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#030806]/60 via-transparent to-transparent pointer-events-none" />
                 <div className="absolute bottom-4 left-4 bg-[rgba(3,8,6,0.85)] backdrop-blur-md border border-[rgba(212,169,66,0.25)] rounded-xl px-3 sm:px-4 py-2 sm:py-2.5 space-y-0.5">
-                  <p className="text-[10px] sm:text-xs text-[#D4A942] font-semibold font-body uppercase tracking-wider">1855 Santhal Hul</p>
-                  <p className="text-xs sm:text-sm text-[#F5F0E8] font-body">The Great Rebellion of Jharkhand</p>
+                  <p className="text-[10px] sm:text-xs text-[#D4A942] font-semibold font-body uppercase tracking-wider">{t("santhalHulBadge")}</p>
+                  <p className="text-xs sm:text-sm text-[#F5F0E8] font-body">{t("santhalHulTitle")}</p>
                 </div>
               </div>
             </div>
@@ -306,50 +303,50 @@ export default function HomePageClient({ initialSpots = [] }: { initialSpots: To
           <div className="text-center max-w-3xl mx-auto mb-12 space-y-3">
             <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-[rgba(212,169,66,0.3)] text-[#D4A942] text-[11px] sm:text-xs font-semibold uppercase tracking-[0.15em] font-body bg-[rgba(212,169,66,0.06)]">
               <Sparkles size={11} />
-              Traveler Information Guide
+              {t("faqBadge")}
             </div>
             <h2 className="font-serif font-bold text-[#F5F0E8] text-2xl sm:text-4xl md:text-5xl">
-              Essential Guide to <span className="text-gold-gradient">Pakur, Jharkhand</span>
+              {t("faqHeading")} <span className="text-gold-gradient">{t("faqHighlight")}</span>
             </h2>
             <p className="text-xs sm:text-sm text-[#7A9180] font-body">
-              Frequently asked questions about sightseeing, connectivity, and cultural heritage in Pakur district.
+              {t("faqDesc")}
             </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5 max-w-5xl mx-auto">
             <div className="luxury-card rounded-2xl p-6 border border-[rgba(212,169,66,0.15)] space-y-2.5">
               <h3 className="font-serif font-bold text-base text-[#F5F0E8] flex items-center gap-2">
-                <span className="text-[#D4A942]">Q.</span> What is Pakur famous for?
+                <span className="text-[#D4A942]">Q.</span> {t("q1")}
               </h3>
               <p className="text-xs sm:text-sm text-[#7A9180] font-body leading-relaxed">
-                Pakur is renowned for its prehistoric Rajmahal basalt rock formations (&ldquo;Black Stone City&rdquo;), the historic 1856 Martello Tower commemorating the 1855 Santhal Rebellion, untouched cascading waterfalls like Lilatari and Amrapara, natural geothermal hot springs at Sidpur, and rich Santhal tribal folklore.
+                {t("a1")}
               </p>
             </div>
 
             <div className="luxury-card rounded-2xl p-6 border border-[rgba(212,169,66,0.15)] space-y-2.5">
               <h3 className="font-serif font-bold text-base text-[#F5F0E8] flex items-center gap-2">
-                <span className="text-[#D4A942]">Q.</span> What are the top places to visit in Pakur?
+                <span className="text-[#D4A942]">Q.</span> {t("q2")}
               </h3>
               <p className="text-xs sm:text-sm text-[#7A9180] font-body leading-relaxed">
-                Key destinations include Singhashi Hilltop Peak (the highest peak in the district), Lilatari Waterfall, Kanchangarh Ancient Caves, Siddhu Kanhu Park &amp; Martello Tower, Sidpur Natural Sulfur Hot Springs, Nityakalyani Shakti Temple, and the vibrant weekly tribal haats of Hiranpur and Littipara.
+                {t("a2")}
               </p>
             </div>
 
             <div className="luxury-card rounded-2xl p-6 border border-[rgba(212,169,66,0.15)] space-y-2.5">
               <h3 className="font-serif font-bold text-base text-[#F5F0E8] flex items-center gap-2">
-                <span className="text-[#D4A942]">Q.</span> How can tourists reach Pakur?
+                <span className="text-[#D4A942]">Q.</span> {t("q3")}
               </h3>
               <p className="text-xs sm:text-sm text-[#7A9180] font-body leading-relaxed">
-                Pakur has a prominent Eastern Railway station (Station Code: PKR) with daily express trains from Kolkata (Howrah &amp; Sealdah), Bhagalpur, Patna, and Ranchi. By road, state highways connect Pakur directly to Dumka (65 km), Sahibganj (75 km), and Deoghar Airport (135 km).
+                {t("a3")}
               </p>
             </div>
 
             <div className="luxury-card rounded-2xl p-6 border border-[rgba(212,169,66,0.15)] space-y-2.5">
               <h3 className="font-serif font-bold text-base text-[#F5F0E8] flex items-center gap-2">
-                <span className="text-[#D4A942]">Q.</span> When is the best time to visit Pakur?
+                <span className="text-[#D4A942]">Q.</span> {t("q4")}
               </h3>
               <p className="text-xs sm:text-sm text-[#7A9180] font-body leading-relaxed">
-                The best season is from October to March. Autumn and winter offer pleasant, cool weather perfect for nature treks and outdoor exploration, with post-monsoon waterfalls flowing abundantly. November to January is also the season of traditional Santhal harvest festivities.
+                {t("a4")}
               </p>
             </div>
           </div>
@@ -358,24 +355,24 @@ export default function HomePageClient({ initialSpots = [] }: { initialSpots: To
           <div className="mt-12 max-w-5xl mx-auto luxury-card rounded-3xl p-6 sm:p-10 border border-[rgba(212,169,66,0.25)] flex flex-col sm:flex-row items-center justify-between gap-6">
             <div className="space-y-1.5 text-center sm:text-left">
               <h3 className="font-serif font-bold text-lg sm:text-xl text-[#F5F0E8]">
-                Planning an Eco-Expedition to Pakur?
+                {t("ctaTitle")}
               </h3>
               <p className="text-xs sm:text-sm text-[#7A9180] font-body">
-                Learn more about our sustainable tourism mission or connect directly with our regional helpdesk.
+                {t("ctaDesc")}
               </p>
             </div>
             <div className="flex items-center gap-3 shrink-0">
               <Link
-                href="/about"
+                href={`/${locale}/about`}
                 className="inline-flex items-center gap-1.5 text-xs font-semibold px-4 py-2.5 rounded-xl border border-[rgba(212,169,66,0.3)] text-[#D4A942] hover:bg-[rgba(212,169,66,0.08)] transition-all font-body"
               >
-                About Pakur
+                {t("ctaAboutBtn")}
               </Link>
               <Link
-                href="/contact"
+                href={`/${locale}/contact`}
                 className="inline-flex items-center gap-1.5 text-xs font-bold px-4 py-2.5 rounded-xl bg-gradient-to-r from-[#D4A942] to-[#E8C56D] text-[#08110B] hover:opacity-95 transition-all shadow-md font-body"
               >
-                Contact Helpdesk
+                {t("ctaContactBtn")}
               </Link>
             </div>
           </div>

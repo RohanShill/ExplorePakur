@@ -1,8 +1,19 @@
-﻿import { getRequestConfig } from 'next-intl/server';
+import { getRequestConfig } from 'next-intl/server';
 import { locales, defaultLocale, Locale } from './config';
 
-export default getRequestConfig(async ({ locale }) => {
-  const currentLocale = locales.includes(locale as Locale) ? (locale as Locale) : defaultLocale;
+export default getRequestConfig(async (params: any) => {
+  // Support both next-intl requestLocale (v3.24+) and legacy locale param
+  let rawLocale = params?.requestLocale;
+  if (rawLocale && typeof rawLocale.then === 'function') {
+    rawLocale = await rawLocale;
+  }
+  if (!rawLocale) {
+    rawLocale = params?.locale;
+  }
+
+  const currentLocale: Locale = (rawLocale && locales.includes(rawLocale as Locale))
+    ? (rawLocale as Locale)
+    : defaultLocale;
 
   return {
     locale: currentLocale,

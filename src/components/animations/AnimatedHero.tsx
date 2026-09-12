@@ -1,13 +1,18 @@
-﻿"use client";
+"use client";
 
 import React, { useRef, useEffect, useState } from "react";
 import Link from "next/link";
 import { gsap } from "gsap";
 import { Compass, MapPin, Sparkles, ChevronDown, Mountain, Waves } from "lucide-react";
+import { useTranslations, useLocale } from "next-intl";
 
 interface Stats { spots: number; access: number; year: number; km: number; }
 
 const AnimatedHero: React.FC = () => {
+  const t = useTranslations("home");
+  const locale = useLocale();
+  const isHi = locale === "hi";
+
   const containerRef = useRef<HTMLDivElement>(null);
   const badgeRef = useRef<HTMLDivElement>(null);
   const titleRef = useRef<HTMLHeadingElement>(null);
@@ -74,8 +79,8 @@ const AnimatedHero: React.FC = () => {
           <Mountain size={20} />
         </div>
         <div>
-          <span className="text-xs font-semibold text-[#F5F0E8] block font-body">Singhashi Peak</span>
-          <span className="text-[11px] text-[#7A9180] font-body">Rajmahal Hills Vista</span>
+          <span className="text-xs font-semibold text-[#F5F0E8] block font-body">{t("singhashiBadge")}</span>
+          <span className="text-[11px] text-[#7A9180] font-body">{t("singhashiDesc")}</span>
         </div>
       </div>
 
@@ -87,8 +92,8 @@ const AnimatedHero: React.FC = () => {
           <Waves size={20} />
         </div>
         <div>
-          <span className="text-xs font-semibold text-[#F5F0E8] block font-body">Lilatari Falls</span>
-          <span className="text-[11px] text-[#7A9180] font-body">Monsoon Cascade</span>
+          <span className="text-xs font-semibold text-[#F5F0E8] block font-body">{t("lilatariBadge")}</span>
+          <span className="text-[11px] text-[#7A9180] font-body">{t("lilatariDesc")}</span>
         </div>
       </div>
 
@@ -99,7 +104,7 @@ const AnimatedHero: React.FC = () => {
         <div ref={badgeRef} className="flex justify-center">
           <div className="inline-flex items-center gap-2 border border-[rgba(212,169,66,0.3)] text-[#D4A942] bg-[rgba(212,169,66,0.07)] px-4 py-1.5 rounded-full text-[11px] sm:text-xs font-semibold backdrop-blur-sm font-body">
             <Sparkles size={12} />
-            Santhal Pargana&apos;s Hidden Gem
+            {t("heroBadge")}
             <Sparkles size={12} />
           </div>
         </div>
@@ -109,14 +114,20 @@ const AnimatedHero: React.FC = () => {
           ref={titleRef}
           className="font-serif font-bold text-[#F5F0E8] leading-[1.12] text-[2.6rem] sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl"
         >
-          {words.map((word, i) => {
-            const highlight = word === "Untouched" || word === "Jewel" || word === "Jharkhand";
-            return (
-              <span key={i} className={highlight ? "text-gold-gradient" : ""}>
-                {word}{i < words.length - 1 ? " " : ""}
-              </span>
-            );
-          })}
+          {isHi ? (
+            <>
+              झारखंड के <span className="text-gold-gradient">अछूते सौंदर्य</span> की खोज करें
+            </>
+          ) : (
+            words.map((word, i) => {
+              const highlight = word === "Untouched" || word === "Jewel" || word === "Jharkhand";
+              return (
+                <span key={i} className={highlight ? "text-gold-gradient" : ""}>
+                  {word}{i < words.length - 1 ? " " : ""}
+                </span>
+              );
+            })
+          )}
         </h1>
 
         {/* Subtitle */}
@@ -124,24 +135,24 @@ const AnimatedHero: React.FC = () => {
           ref={subRef}
           className="max-w-xl mx-auto text-[#7A9180] text-sm sm:text-base leading-relaxed font-body px-2"
         >
-          Explore hidden basalt caverns, misty Rajmahal viewpoints, thermal springs, and the sacred homeland of the 1855 Santhal Hul rebellion — Pakur, Jharkhand.
+          {t("heroSubtitle")}
         </p>
 
         {/* CTAs — stacked on small mobile, row on sm+ */}
         <div ref={ctaRef} className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-1">
           <Link
-            href="#spots-section"
+            href={`/${locale}#spots-section`}
             className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 bg-[#D4A942] hover:bg-[#E8C060] text-[#030806] font-semibold px-7 py-3.5 rounded-xl shadow-[0_0_28px_rgba(212,169,66,0.35)] hover:shadow-[0_0_40px_rgba(212,169,66,0.5)] transition-all duration-300 active:scale-95 text-sm font-body"
           >
             <Compass size={17} />
-            Explore Destinations
+            {t("exploreDestinations")}
           </Link>
           <Link
-            href="#map-section"
+            href={`/${locale}#map-section`}
             className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 bg-transparent border border-[rgba(212,169,66,0.3)] text-[#F5F0E8] hover:bg-[rgba(212,169,66,0.07)] hover:border-[rgba(212,169,66,0.6)] font-medium px-7 py-3.5 rounded-xl transition-all duration-300 active:scale-95 text-sm font-body"
           >
             <MapPin size={17} className="text-[#D4A942]" />
-            Interactive Map
+            {t("interactiveMap")}
           </Link>
         </div>
 
@@ -151,10 +162,10 @@ const AnimatedHero: React.FC = () => {
           className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 max-w-2xl mx-auto pt-6 sm:pt-8"
         >
           {[
-            { value: `${stats.spots}+`, label: "Prime Eco-Spots",   color: "#D4A942" },
-            { value: `${stats.access}%`,label: "Free Public Access", color: "#00C785" },
-            { value: `${stats.year}`,   label: "Santhal Hul Legacy", color: "#D4A942" },
-            { value: `${stats.km}km`,   label: "Trails & Routes",    color: "#00C785" },
+            { value: `${stats.spots}+`, label: t("primeEcoSpots"),   color: "#D4A942" },
+            { value: `${stats.access}%`,label: t("freeAccess"),       color: "#00C785" },
+            { value: `${stats.year}`,   label: t("santhalLegacy"),    color: "#D4A942" },
+            { value: `${stats.km}km`,   label: t("trailsRoutes"),     color: "#00C785" },
           ].map((s, i) => (
             <div
               key={i}
@@ -169,7 +180,7 @@ const AnimatedHero: React.FC = () => {
 
       {/* Scroll hint */}
       <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1 animate-bounce text-[#7A9180]">
-        <span className="text-[9px] sm:text-[10px] uppercase tracking-widest font-body">Scroll</span>
+        <span className="text-[9px] sm:text-[10px] uppercase tracking-widest font-body">{t("scroll")}</span>
         <ChevronDown size={15} />
       </div>
     </section>

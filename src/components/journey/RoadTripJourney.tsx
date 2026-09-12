@@ -2,6 +2,7 @@
 
 import React, { useRef, useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
+import { useTranslations, useLocale } from "next-intl";
 import gsap from 'gsap';
 import { TouristSpot } from '@/types';
 import {
@@ -24,6 +25,8 @@ interface RoadTripJourneyProps {
 }
 
 export const RoadTripJourney: React.FC<RoadTripJourneyProps> = ({ spots }) => {
+  const t = useTranslations("home");
+  const locale = useLocale();
   // Use first 8 spots or all available for the expedition tour
   const expeditionSpots = React.useMemo(() => {
     return spots.length > 0 ? spots.slice(0, 8) : [];
@@ -189,13 +192,13 @@ export const RoadTripJourney: React.FC<RoadTripJourneyProps> = ({ spots }) => {
         <div>
           <div className="inline-flex items-center gap-1.5 text-[#FF6B4A] text-xs font-black uppercase tracking-widest">
             <Compass size={14} className="animate-spin-slow" />
-            <span>Interactive Road Trip Expedition</span>
+            <span>{t("safariBadge")}</span>
           </div>
           <h2 className="text-2xl sm:text-4xl font-black text-slate-100 tracking-tight mt-1">
-            Pakur Scenic Safari Route
+            {t("safariTitle")}
           </h2>
           <p className="text-xs sm:text-sm text-slate-400 mt-1 max-w-xl">
-            Tour through the Rajmahal hills, river shallows, ancient cave sanctums, and tribal monuments.
+            {t("safariDesc")}
           </p>
         </div>
 
@@ -204,10 +207,10 @@ export const RoadTripJourney: React.FC<RoadTripJourneyProps> = ({ spots }) => {
           <button
             onClick={() => setIsPlaying(!isPlaying)}
             className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-[#111E16] hover:bg-[#16281E] border border-emerald-500/20 text-slate-300 text-xs font-bold transition-all"
-            title={isPlaying ? 'Pause Auto Tour' : 'Resume Auto Tour'}
+            title={isPlaying ? t('autoTour') : t('paused')}
           >
             {isPlaying ? <Pause size={13} className="text-[#00F5A0]" /> : <Play size={13} className="text-[#FF6B4A]" />}
-            <span className="hidden sm:inline">{isPlaying ? 'Auto-Tour' : 'Paused'}</span>
+            <span className="hidden sm:inline">{isPlaying ? t('autoTour') : t('paused')}</span>
           </button>
 
           <button
@@ -303,10 +306,10 @@ export const RoadTripJourney: React.FC<RoadTripJourneyProps> = ({ spots }) => {
           {/* Action Navigation Buttons */}
           <div className="stagger-reveal pt-2 flex flex-wrap items-center gap-3">
             <Link
-              href={`/spots/${activeSpot.slug}`}
+              href={`/${locale}/spots/${activeSpot.slug}`}
               className="inline-flex items-center gap-2 bg-[#00F5A0] hover:bg-[#00e092] text-[#0B130E] font-extrabold text-xs sm:text-sm px-5 py-3 rounded-xl shadow-[0_0_20px_rgba(0,245,160,0.35)] active:scale-95 transition-all"
             >
-              <span>Explore Complete Guide</span>
+              <span>{t('exploreSpot')}</span>
               <ArrowRight size={15} />
             </Link>
 
@@ -318,7 +321,7 @@ export const RoadTripJourney: React.FC<RoadTripJourneyProps> = ({ spots }) => {
               className="inline-flex items-center gap-2 bg-[#FF6B4A] hover:bg-[#ff5530] text-[#0B130E] font-extrabold text-xs sm:text-sm px-5 py-3 rounded-xl shadow-[0_0_20px_rgba(255,107,74,0.35)] active:scale-95 transition-all"
             >
               <Navigation size={15} />
-              <span>See on Google Maps</span>
+              <span>{t('getDirections')}</span>
             </a>
           </div>
         </div>
