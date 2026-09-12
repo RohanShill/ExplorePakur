@@ -142,27 +142,26 @@
     "title": "Sidho-Kanho Murmu Park",
     "slug": "siddhu-kanhu-park",
     "category": "Park & Heritage",
-    "description": "A premier civic green space and cultural memorial honoring the leaders of the 1855 Santhal Hul rebellion, featuring manicured flower gardens, walking pathways, and recreational grounds in central Pakur.",
-    "longDescription": "Dedicated to the legendary brothers Sido and Kanhu Murmu—pioneers of the historic 1855 Santhal Rebellion (Hul)—Sidho-Kanho Murmu Park is Pakur’s central eco-park and key cultural memorial. The park honors the indigenous uprising led by the Santhal community against British colonial tax collectors and exploitative zamindars, cementing Pakur’s connection to India's early freedom struggle.\n\nThe park features centrally installed statues of Sidho and Kanho Murmu flanked by landscaped perimeter gardens, native shade trees, and seasonal botanical beds. A wide paved perimeter track accommodates morning joggers and evening walkers, while dedicated open lawns provide space for quiet leisure and family outings. For families visiting with children, the park houses an enclosed recreation zone equipped with swings, slides, and climbing apparatus. Decorative lighting, resting gazebos, and water fountain installations make it a primary civic gathering hub within the town.",
+    "description": "A premier municipal eco-park and monument honoring the heroic leaders of the 1855 Santhal Hul rebellion.",
+    "longDescription": "Named in tribute to the Santhal brothers Sidho and Kanho Murmu who spearheaded the legendary freedom uprising against British colonial oppression, this well-maintained eco-park features landscaped flower gardens, children's play areas, illuminated walkways, and historical statues depicting regional tribal heritage.",
     "latitude": 24.6292,
     "longitude": 87.8385,
-    "coverImage": "https://ik.imagekit.io/r2h4n/explore-pakur/ChatGPT_Image_Sep_12__2026__10_45_54_PM_NBxsfYEkI.png",
+    "coverImage": "https://images.unsplash.com/photo-1519331379826-f10be5486c6f?auto=format&fit=crop&w=1200&q=80",
     "galleryImages": [
-      "https://ik.imagekit.io/r2h4n/explore-pakur/ChatGPT_Image_Sep_12__2026__10_45_54_PM_JBnjSepOU.png"
+      "https://images.unsplash.com/photo-1519331379826-f10be5486c6f?auto=format&fit=crop&w=800&q=80"
     ],
     "bestTimeToVisit": "Round the year",
     "distanceFromPakurStation": "1.5 km from Pakur Station",
-    "entryFee": "20 per adult",
-    "timing": "06:00 AM - 07:30 PM",
+    "entryFee": "?10 per adult",
+    "timing": "06:00 AM � 07:30 PM",
     "nearestRailway": "Pakur (PKR)",
     "highlights": [
-      "Santhal Hul Memorial: Life-size statues of Sido and Kanhu Murmu paying tribute to regional tribal freedom fighters  Landscaped Greenery: Well-maintained flower beds",
-      "open grass lawns",
-      "and shaded seating gazebos  Walking & Jogging Tracks: Paved and illuminated pathways popular for early-morning fitness routines  Children's Play Enclosure: Equipped with multi-play structures",
-      "swings",
-      "and slides  Civic Recreation: Central fountain setup and illuminated evening spaces for relaxed public gatherings"
+      "Santhal Hul Monument",
+      "Musical Fountains",
+      "Botanical Flowerbeds",
+      "Family Picnic Lawns"
     ],
-    "culturalNote": "The park commemorates the sacrifices of the Santhal brothers, who mobilized tens of thousands of Santhals on June 30, 1855, at Bhagnadih to revolt against British exploitation and debt-bondage. Every year on Hul Diwas (June 30), the park becomes the focal point of town-wide remembrance, hosting state dignitaries, wreath-laying ceremonies, traditional Santhali folk music, and community cultural programs.",
+    "culturalNote": "Commemorative ceremonies and cultural festivals are held annually on Hul Diwas (June 30).",
     "createdAt": "2026-09-06T10:11:57.887992+00:00"
   },
   {

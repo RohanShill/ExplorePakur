@@ -90,6 +90,7 @@ export default async function LocalizedSpotDetailPage({ params }: SpotDetailsPro
   const isHi = locale === "hi";
   const spot = await getSpotBySlug(slug, locale);
   if (!spot) notFound();
+  const allSpots = await getAllSpots(locale);
 
   const reviews = await getReviewsForSpot(spot.id);
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://explorepakur.in";
@@ -300,7 +301,7 @@ export default async function LocalizedSpotDetailPage({ params }: SpotDetailsPro
             <section className="space-y-3">
               <h3 className="font-serif text-base sm:text-lg font-bold text-[#F5F0E8]">Location &amp; Access</h3>
               <div className="h-64 sm:h-80 rounded-2xl overflow-hidden border border-[rgba(212,169,66,0.2)]">
-                <DynamicMap spots={[spot]} center={[spot.latitude, spot.longitude]} zoom={13} height="100%" />
+                <DynamicMap spots={allSpots} center={[spot.latitude, spot.longitude]} zoom={15} selectedSpotId={spot.id} height="100%" />
               </div>
             </section>
 

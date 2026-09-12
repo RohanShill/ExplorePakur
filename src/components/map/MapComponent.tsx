@@ -27,65 +27,15 @@ export const PAKUR_DISTRICT_BOUNDS: [number, number][] = [
   [24.7800, 87.6200]
 ];
 
-// Major prominent landmarks in Pakur to ensure top coverage on map
-export const ADDITIONAL_MAJOR_LANDMARKS: Partial<TouristSpot>[] = [
-  {
-    id: 'martello-tower-hq',
-    title: 'Martello Tower',
-    slug: 'martello-tower',
-    category: 'Park & Heritage',
-    description: 'Historic British defensive watchtower built in 1856 during the legendary Santhal Hul rebellion.',
-    latitude: 24.6344,
-    longitude: 87.8475,
-    coverImage: 'https://images.unsplash.com/photo-1590059390046-24f1c9c4b789?auto=format&fit=crop&w=800&q=80',
-  },
-  {
-    id: 'sidho-kanho-park-hq',
-    title: 'Sidho-Kanho Murmu Park',
-    slug: 'sidho-kanho-park',
-    category: 'Park & Heritage',
-    description: 'Lush eco-park and memorial honoring tribal martyrs Sidho and Kanho Murmu.',
-    latitude: 24.6292,
-    longitude: 87.8385,
-    coverImage: 'https://images.unsplash.com/photo-1519331379826-f10be5486c6f?auto=format&fit=crop&w=800&q=80',
-  },
-  {
-    id: 'nityakali-mandir-hq',
-    title: 'Nityakali Mandir',
-    slug: 'nityakali-mandir',
-    category: 'Park & Heritage',
-    description: 'Ancient spiritual heritage temple renowned for terracotta artistry and cultural festivities.',
-    latitude: 24.6385,
-    longitude: 87.8530,
-    coverImage: 'https://images.unsplash.com/photo-1582510003544-4d00b7f74220?auto=format&fit=crop&w=800&q=80',
-  },
-  {
-    id: 'maheshpur-rajbari-hq',
-    title: 'Maheshpur Rajbari',
-    slug: 'maheshpur-rajbari',
-    category: 'Park & Heritage',
-    description: 'Centuries-old royal estate and palace ruins showcasing medieval regional history.',
-    latitude: 24.4780,
-    longitude: 87.7650,
-    coverImage: 'https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?auto=format&fit=crop&w=800&q=80',
-  },
-  {
-    id: 'dharni-pahar-hq',
-    title: 'Dharni Pahar & Caves',
-    slug: 'dharni-pahar',
-    category: 'Cave & Hill',
-    description: 'Elevated rock hills offering panoramic views across the Santhal Pargana plateau.',
-    latitude: 24.5510,
-    longitude: 87.7210,
-    coverImage: 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=800&q=80',
-  }
-];
+// No hardcoded phantom landmarks; map uses exclusively database-driven spots
+export const ADDITIONAL_MAJOR_LANDMARKS: Partial<TouristSpot>[] = [];
 
 interface MapComponentProps {
   spots: TouristSpot[];
   center?: [number, number];
   zoom?: number;
   selectedSpotId?: string;
+  autoFitDistrict?: boolean;
   className?: string;
 }
 
@@ -155,34 +105,46 @@ const createDarkMatterPin = (category: string, isSelected: boolean) => {
   });
 };
 
-// Automatically fits the view to frame the whole Pakur District area
-function FitDistrictBounds() {
+// Controller component to handle Geolocation, explicit centering & district auto-fit
+function MapViewController({
+  center,
+  zoom,
+  shouldFitDistrict,
+  targetPos,
+}: {
+  center?: [number, number];
+  zoom?: number;
+  shouldFitDistrict?: boolean;
+  targetPos?: [number, number] | null;
+}) {
   const map = useMap();
-  useEffect(() => {
-    const bounds = L.latLngBounds(PAKUR_DISTRICT_BOUNDS);
-    map.fitBounds(bounds, { padding: [30, 30], maxZoom: 11 });
-  }, [map]);
-  return null;
-}
 
-// Controller component to handle Geolocation & programmatic centering
-function MapController({ targetPos }: { targetPos: [number, number] | null }) {
-  const map = useMap();
   useEffect(() => {
     if (targetPos) {
-      map.flyTo(targetPos, 13, { duration: 1.5 });
+      map.flyTo(targetPos, 15, { duration: 1.5 });
+      return;
     }
-  }, [targetPos, map]);
+
+    if (center && !isNaN(center[0]) && !isNaN(center[1])) {
+      map.setView(center, zoom || 15, { animate: true });
+    } else if (shouldFitDistrict) {
+      const bounds = L.latLngBounds(PAKUR_DISTRICT_BOUNDS);
+      map.fitBounds(bounds, { padding: [30, 30], maxZoom: 11 });
+    }
+  }, [center, zoom, shouldFitDistrict, targetPos, map]);
+
   return null;
 }
 
 export const MapComponent: React.FC<MapComponentProps> = ({
   spots,
-  center = [24.5800, 87.7000],
-  zoom = 10,
+  center,
+  zoom = 15,
   selectedSpotId,
+  autoFitDistrict,
   className = 'h-full w-full rounded-2xl overflow-hidden',
 }) => {
+  const shouldFitDistrict = autoFitDistrict !== undefined ? autoFitDistrict : !center;
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [userLocation, setUserLocation] = useState<[number, number] | null>(null);
   const [locating, setLocating] = useState(false);
@@ -216,29 +178,11 @@ export const MapComponent: React.FC<MapComponentProps> = ({
     );
   };
 
-  // Merge spots with key landmarks (deduplicated by both ID and slug)
+  // Only display actual database spots, no ghost or duplicate phantom markers
   const allDisplaySpots = React.useMemo(() => {
-    const spotMap = new Map<string, any>();
-    const slugSet = new Set<string>();
-
-    spots.forEach((s) => {
-      spotMap.set(s.id, s);
-      if (s.slug) {
-        slugSet.add(s.slug.toLowerCase().trim());
-      }
-    });
-
-    ADDITIONAL_MAJOR_LANDMARKS.forEach((landmark) => {
-      const alreadyHasId = landmark.id && spotMap.has(landmark.id);
-      const alreadyHasSlug = landmark.slug && slugSet.has(landmark.slug.toLowerCase().trim());
-
-      // Only add fallback landmark if no matching spot is present from the database
-      if (!alreadyHasId && !alreadyHasSlug && landmark.id) {
-        spotMap.set(landmark.id, landmark);
-      }
-    });
-
-    return Array.from(spotMap.values());
+    return (spots || []).filter(
+      (s) => s && !isNaN(s.latitude) && !isNaN(s.longitude) && s.latitude !== 0 && s.longitude !== 0
+    );
   }, [spots]);
 
   return (
@@ -349,8 +293,12 @@ export const MapComponent: React.FC<MapComponentProps> = ({
           </Marker>
         )}
 
-        <FitDistrictBounds />
-        <MapController targetPos={userLocation} />
+        <MapViewController
+          center={center}
+          zoom={zoom}
+          shouldFitDistrict={shouldFitDistrict}
+          targetPos={userLocation}
+        />
 
         {/* 2. Top Major Locations Pointed by Pins */}
         {allDisplaySpots.map((spot) => {
