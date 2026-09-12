@@ -106,7 +106,7 @@ export const AdminMapPicker: React.FC<AdminMapPickerProps> = ({
   return (
     <div className="relative w-full h-[360px] sm:h-[420px] rounded-2xl overflow-hidden border border-emerald-500/20 shadow-[0_4px_24px_rgba(0,0,0,0.4)]">
       {/* Top Banner Guide */}
-      <div className="absolute top-3 left-3 right-3 z-[1000] flex items-center justify-between pointer-events-none">
+      <div className="absolute top-3 left-3 right-3 z-20 flex items-center justify-between pointer-events-none">
         <div className="bg-[#0B130E]/90 backdrop-blur-md border border-emerald-500/30 text-slate-200 text-xs px-3 py-1.5 rounded-xl shadow-lg flex items-center gap-1.5 pointer-events-auto">
           <MapPin size={14} className="text-[#FF6B4A] animate-pulse" />
           <span>Click anywhere or drag the pin to set location</span>

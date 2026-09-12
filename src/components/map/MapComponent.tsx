@@ -250,7 +250,7 @@ export const MapComponent: React.FC<MapComponentProps> = ({
       }`}
     >
       {/* Mobile-Friendly Control Action Floating Bar */}
-      <div className="absolute top-3 right-3 z-[1000] flex items-center gap-2">
+      <div className="absolute top-3 right-3 z-20 flex items-center gap-2">
         {/* Locate Me Button */}
         <button
           onClick={handleLocateMe}

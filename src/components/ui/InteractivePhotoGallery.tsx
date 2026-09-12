@@ -1,6 +1,7 @@
 ﻿"use client";
 
 import React, { useState, useEffect, useCallback, useRef } from "react";
+import { createPortal } from "react-dom";
 import {
   X,
   ChevronLeft,
@@ -45,6 +46,11 @@ export default function InteractivePhotoGallery({
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isZoomed, setIsZoomed] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   // Touch swipe handling for mobile
   const touchStartX = useRef<number | null>(null);
@@ -196,15 +202,16 @@ export default function InteractivePhotoGallery({
         </div>
       </section>
 
-      {/* Pop Zoom Lightbox Modal */}
-      {isOpen && (
+      {/* Pop Zoom Lightbox Modal - Portalled directly to document.body with supreme z-index to isolate from all page elements */}
+      {isOpen && mounted && typeof document !== "undefined" && createPortal(
         <div
-          className="fixed inset-0 z-[100] flex flex-col justify-between bg-[#030806]/95 backdrop-blur-2xl animate-fade-in select-none"
+          className="fixed inset-0 z-[999999] flex flex-col justify-between bg-[#030806] backdrop-blur-2xl animate-fade-in select-none w-screen h-screen overflow-hidden"
+          style={{ isolation: "isolate" }}
           onTouchStart={handleTouchStart}
           onTouchEnd={handleTouchEnd}
         >
           {/* Top Control Bar */}
-          <div className="relative z-10 flex items-center justify-between px-4 sm:px-8 py-3.5 sm:py-4 bg-gradient-to-b from-black/90 to-transparent">
+          <div className="relative z-20 flex items-center justify-between px-4 sm:px-8 py-3.5 sm:py-4 bg-gradient-to-b from-black/95 to-transparent">
             <div className="space-y-0.5 max-w-[60%] sm:max-w-[70%]">
               <h4 className="font-serif text-sm sm:text-base font-bold text-[#F5F0E8] truncate">
                 {spotTitle}
@@ -253,7 +260,7 @@ export default function InteractivePhotoGallery({
 
           {/* Central Main Viewport */}
           <div
-            className="relative flex-1 flex items-center justify-center px-3 sm:px-16 overflow-hidden"
+            className="relative flex-1 flex items-center justify-center px-3 sm:px-16 overflow-hidden z-10"
             onClick={(e) => {
               if (e.target === e.currentTarget) closeLightbox();
             }}
@@ -267,7 +274,7 @@ export default function InteractivePhotoGallery({
                   prevImage();
                 }}
                 title="Previous Image (Left Arrow or Swipe Right)"
-                className="absolute left-2 sm:left-6 top-1/2 -translate-y-1/2 z-20 p-2.5 sm:p-3.5 rounded-full bg-[rgba(13,25,18,0.85)] border border-[rgba(212,169,66,0.3)] text-[#F5F0E8] hover:text-[#D4A942] hover:border-[#D4A942] hover:scale-110 active:scale-95 transition-all shadow-[0_4px_25px_rgba(0,0,0,0.8)] backdrop-blur-md cursor-pointer"
+                className="absolute left-2 sm:left-6 top-1/2 -translate-y-1/2 z-30 p-2.5 sm:p-3.5 rounded-full bg-[rgba(13,25,18,0.85)] border border-[rgba(212,169,66,0.3)] text-[#F5F0E8] hover:text-[#D4A942] hover:border-[#D4A942] hover:scale-110 active:scale-95 transition-all shadow-[0_4px_25px_rgba(0,0,0,0.8)] backdrop-blur-md cursor-pointer"
               >
                 <ChevronLeft size={22} />
               </button>
@@ -276,7 +283,7 @@ export default function InteractivePhotoGallery({
             {/* Active Image with Pop-Zoom Animation */}
             <div
               key={currentIndex}
-              className={`relative max-w-full max-h-full flex items-center justify-center transition-all duration-300 ease-out ${
+              className={`relative max-w-full max-h-full flex items-center justify-center transition-all duration-300 ease-out z-20 ${
                 isZoomed ? "overflow-auto cursor-zoom-out" : "cursor-zoom-in"
               }`}
               onDoubleClick={() => setIsZoomed(!isZoomed)}
@@ -300,7 +307,7 @@ export default function InteractivePhotoGallery({
                   nextImage();
                 }}
                 title="Next Image (Right Arrow or Swipe Left)"
-                className="absolute right-2 sm:right-6 top-1/2 -translate-y-1/2 z-20 p-2.5 sm:p-3.5 rounded-full bg-[rgba(13,25,18,0.85)] border border-[rgba(212,169,66,0.3)] text-[#F5F0E8] hover:text-[#D4A942] hover:border-[#D4A942] hover:scale-110 active:scale-95 transition-all shadow-[0_4px_25px_rgba(0,0,0,0.8)] backdrop-blur-md cursor-pointer"
+                className="absolute right-2 sm:right-6 top-1/2 -translate-y-1/2 z-30 p-2.5 sm:p-3.5 rounded-full bg-[rgba(13,25,18,0.85)] border border-[rgba(212,169,66,0.3)] text-[#F5F0E8] hover:text-[#D4A942] hover:border-[#D4A942] hover:scale-110 active:scale-95 transition-all shadow-[0_4px_25px_rgba(0,0,0,0.8)] backdrop-blur-md cursor-pointer"
               >
                 <ChevronRight size={22} />
               </button>
@@ -308,7 +315,7 @@ export default function InteractivePhotoGallery({
           </div>
 
           {/* Bottom Thumbnail Strip */}
-          <div className="relative z-10 px-4 sm:px-8 py-3 sm:py-4 bg-gradient-to-t from-black/95 to-transparent">
+          <div className="relative z-20 px-4 sm:px-8 py-3 sm:py-4 bg-gradient-to-t from-black/95 to-transparent">
             <div className="max-w-4xl mx-auto flex items-center justify-center gap-2 sm:gap-3 overflow-x-auto scrollbar-none py-1">
               {allImages.map((thumb, idx) => {
                 const isActive = idx === currentIndex;
@@ -336,7 +343,8 @@ export default function InteractivePhotoGallery({
               })}
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </>
   );
