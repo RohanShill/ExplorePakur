@@ -57,22 +57,11 @@ export function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
-  // 4. Determine preferred locale: Cookie -> Accept-Language -> Default
-  const cookieLocale = request.cookies.get('NEXT_LOCALE')?.value;
-  let preferredLocale = DEFAULT_LOCALE;
-
-  if (cookieLocale && (LOCALES as readonly string[]).includes(cookieLocale)) {
-    preferredLocale = cookieLocale;
-  } else {
-    const acceptLanguage = request.headers.get('accept-language') || '';
-    if (acceptLanguage.toLowerCase().includes('hi')) {
-      preferredLocale = 'hi';
-    }
-  }
-
-  // Redirect to localized URL preserving query params
+  // 4. English ('en') is the primary default language when opening the website.
+  // Never auto-redirect to Hindi based on accept-language headers or cookies when accessing root.
+  // The user can explicitly switch to Hindi using the language switcher.
   const targetUrl = new URL(
-    `/${preferredLocale}${pathname === '/' ? '' : pathname}${search}`,
+    `/en${pathname === '/' ? '' : pathname}${search}`,
     request.url
   );
 
