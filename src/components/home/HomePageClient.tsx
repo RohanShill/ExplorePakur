@@ -271,7 +271,7 @@ export default function HomePageClient({ initialSpots = [] }: { initialSpots: To
               </div>
               <div className="flex items-center gap-2">
                 <Shield size={14} className="text-[#00C785] shrink-0" />
-                <span className="text-xs text-[#7A9180] font-body">{t("unescoZone")}</span>
+                <span className="text-xs text-[#7A9180] font-body">{t("tribalHeritage")}</span>
               </div>
             </div>
 
