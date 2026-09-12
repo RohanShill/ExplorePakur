@@ -91,7 +91,7 @@ export const SpotForm: React.FC<SpotFormProps> = ({ initialData, mode }) => {
     }));
   };
 
-  // Trigger server-side Google Cloud Translation for this spot
+  // Trigger server-side Gemini Translation (Google AI Studio) for this spot
   const handleAutoTranslate = async () => {
     if (!form.title || !form.description) {
       setError('Please fill in English Title and Description before auto-translating.');
@@ -124,7 +124,7 @@ export const SpotForm: React.FC<SpotFormProps> = ({ initialData, mode }) => {
               nearestRailway: tr.nearestRailway || '',
             });
             setTranslationStatus(tr.translationStatus || 'translated');
-            setSuccess('Hindi translation generated successfully via Google Cloud Translation API!');
+            setSuccess('Hindi translation generated successfully via Gemini API (Google AI Studio)!');
             setActiveTab('hi');
             return;
           }
@@ -144,7 +144,7 @@ export const SpotForm: React.FC<SpotFormProps> = ({ initialData, mode }) => {
         timing: form.timing,
         nearestRailway: form.nearestRailway,
       });
-      setSuccess('Draft populated. Google Cloud Translation will automatically translate upon saving!');
+      setSuccess('Draft populated. Gemini will automatically translate upon saving!');
       setActiveTab('hi');
     } catch (err) {
       console.error('Auto-translate error:', err);
@@ -276,7 +276,7 @@ export const SpotForm: React.FC<SpotFormProps> = ({ initialData, mode }) => {
             {isTranslating ? (
               <>
                 <Loader2 size={13} className="animate-spin" />
-                <span>Google अनुवाद हो रहा है...</span>
+                <span>Gemini अनुवाद हो रहा है...</span>
               </>
             ) : (
               <>
@@ -533,7 +533,7 @@ export const SpotForm: React.FC<SpotFormProps> = ({ initialData, mode }) => {
               </div>
               <div>
                 <h3 className="text-sm font-bold text-[#F5F0E8] flex items-center gap-2 font-serif">
-                  <span>Google Cloud Translation API</span>
+                  <span>Gemini API (Google AI Studio)</span>
                   <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full font-body ${
                     translationStatus === 'translated'
                       ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'
@@ -543,7 +543,7 @@ export const SpotForm: React.FC<SpotFormProps> = ({ initialData, mode }) => {
                   </span>
                 </h3>
                 <p className="text-xs text-[#7A9180] font-body mt-0.5">
-                  यह अनुवाद Google Cloud द्वारा स्वचालित रूप से तैयार किया गया है। आवश्यकतानुसार इसमें संशोधन किया जा सकता है।
+                  यह अनुवाद Gemini AI द्वारा स्वचालित रूप से तैयार किया गया है। आवश्यकतानुसार इसमें संशोधन किया जा सकता है।
                 </p>
               </div>
             </div>

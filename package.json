@@ -9,7 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@google-cloud/translate": "^10.1.0",
+    "@google/genai": "^2.22.0",
     "@gsap/react": "^2.1.1",
     "@react-three/drei": "^9.121.5",
     "@react-three/fiber": "^8.17.14",

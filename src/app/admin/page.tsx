@@ -102,7 +102,7 @@ export default function AdminDashboardPage() {
 
   // Batch translate all spots (Migration tool for existing content)
   const handleBatchTranslate = async () => {
-    if (!confirm('Run Google Cloud batch translation for all destinations missing Hindi translations?')) return;
+    if (!confirm('Run Gemini AI batch translation for all destinations missing Hindi translations?')) return;
 
     setBatchTranslating(true);
     setFeedback(null);
@@ -324,7 +324,7 @@ export default function AdminDashboardPage() {
                         onClick={() => handleTranslateSpot(spot)}
                         disabled={isTranslatingCurrent}
                         className="inline-flex items-center gap-1 text-xs text-emerald-400 hover:text-emerald-300 bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/25 px-2.5 py-1.5 rounded-lg transition-colors disabled:opacity-50"
-                        title="Translate to Hindi using Google Cloud API"
+                        title="Translate to Hindi using Gemini Flash Lite API"
                       >
                         {isTranslatingCurrent ? (
                           <Loader2 size={13} className="animate-spin" />
