@@ -101,6 +101,7 @@ async function callGeminiApi(
 
         const outputText = response.text;
         if (outputText && outputText.trim()) {
+          console.log(`[Gemini Translation] Successfully generated using model: ${model}`);
           return {
             text: cleanGeminiOutput(outputText),
             success: true,

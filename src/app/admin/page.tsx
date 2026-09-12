@@ -324,7 +324,7 @@ export default function AdminDashboardPage() {
                         onClick={() => handleTranslateSpot(spot)}
                         disabled={isTranslatingCurrent}
                         className="inline-flex items-center gap-1 text-xs text-emerald-400 hover:text-emerald-300 bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/25 px-2.5 py-1.5 rounded-lg transition-colors disabled:opacity-50"
-                        title="Translate to Hindi using Gemini Flash Lite API"
+                        title="Translate to Hindi using Gemini 3.1 Flash Lite API"
                       >
                         {isTranslatingCurrent ? (
                           <Loader2 size={13} className="animate-spin" />

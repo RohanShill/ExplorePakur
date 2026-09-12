@@ -124,7 +124,7 @@ export const SpotForm: React.FC<SpotFormProps> = ({ initialData, mode }) => {
               nearestRailway: tr.nearestRailway || '',
             });
             setTranslationStatus(tr.translationStatus || 'translated');
-            setSuccess('Hindi translation generated successfully via Gemini API (Google AI Studio)!');
+            setSuccess('Hindi translation generated successfully via Gemini 3.1 Flash Lite!');
             setActiveTab('hi');
             return;
           }
@@ -533,7 +533,7 @@ export const SpotForm: React.FC<SpotFormProps> = ({ initialData, mode }) => {
               </div>
               <div>
                 <h3 className="text-sm font-bold text-[#F5F0E8] flex items-center gap-2 font-serif">
-                  <span>Gemini API (Google AI Studio)</span>
+                  <span>Gemini 3.1 Flash Lite (Google AI Studio)</span>
                   <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full font-body ${
                     translationStatus === 'translated'
                       ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'
